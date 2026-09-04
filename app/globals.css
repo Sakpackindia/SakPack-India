@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ivory text-ink font-body antialiased selection:bg-gold-400/30 selection:text-ink;
+  }
+}
+
+@layer components {
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.28em] text-gold-600;
+  }
+
+  .section-heading {
+    @apply font-display text-3xl md:text-[2.6rem] leading-[1.1] text-ink;
+  }
+
+  .gold-line {
+    @apply h-px w-12 bg-gradient-to-r from-transparent via-gold-400 to-transparent;
+  }
+
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-ink px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-ivory shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink-soft hover:shadow-xl active:translate-y-0;
+  }
+
+  .btn-maroon {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-[#380b1b] px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-white shadow-lg transition-all duration-300 hover:bg-[#56142e] hover:shadow-xl;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink/40 bg-transparent px-7 py-3 text-xs font-bold uppercase tracking-widest text-ink transition-all duration-300 hover:bg-ink hover:text-ivory hover:shadow-md;
+  }
+
+  .btn-outline-ink {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink/30 px-7 py-3 text-xs font-bold uppercase tracking-widest text-ink transition-all duration-300 hover:border-ink hover:bg-ink hover:text-ivory;
+  }
+
+  .card-panel {
+    @apply rounded-2xl border border-gold-400/20 bg-white/80 shadow-md backdrop-blur-md transition-all duration-300 hover:shadow-xl hover:border-gold-400/40;
+  }
+
+  .glass-card {
+    @apply rounded-3xl border border-white/20 bg-white/60 shadow-xl backdrop-blur-xl transition-all duration-500 hover:border-gold-400/40 hover:bg-white/80;
+  }
+
+  .glass-dark {
+    @apply rounded-3xl border border-gold-400/20 bg-ink-gradient shadow-2xl backdrop-blur-xl text-ivory;
+  }
+
+  .text-glow-gold {
+    text-shadow: 0 0 20px rgba(202, 161, 75, 0.4);
+  }
+
+  .reveal {
+    opacity: 0;
+  }
+
+  .reveal.in-view {
+    animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+}
+
+::selection {
+  background: rgba(202, 161, 75, 0.35);
+  color: #4a1029;
+}
+
+/* Thin, gold-tinted scrollbar for a more considered feel */
+html {
+  scrollbar-width: thin;
+}
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #4a1029;
+}
+::-webkit-scrollbar-thumb {
+  background: #caa14b;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #f1d989;
+}
+
+/* Hides the scrollbar on horizontal touch-scroll strips (category rail, carousels) */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.08); }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+

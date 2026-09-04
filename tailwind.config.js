@@ -1,0 +1,94 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./app/**/*.{js,jsx}",
+    "./components/**/*.{js,jsx}",
+    "./context/**/*.{js,jsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        ink: {
+          DEFAULT: "#4a1029",
+          soft: "#5c1531",
+          line: "#6b2a44",
+        },
+        ivory: {
+          DEFAULT: "#f7f3ea",
+          deep: "#efe7d4",
+        },
+        gold: {
+          50: "#faf3df",
+          100: "#f1d989",
+          200: "#e6c674",
+          300: "#dcb35f",
+          400: "#caa14b",
+          500: "#b3893a",
+          600: "#a97c2f",
+          700: "#8a6626",
+          DEFAULT: "#caa14b",
+        },
+      },
+      fontFamily: {
+        display: ["var(--font-display)", "sans-serif"],
+        body: ["var(--font-body)", "sans-serif"],
+        serif: ["var(--font-serif)", "serif"],
+      },
+      maxWidth: {
+        wrap: "1360px",
+      },
+      backgroundImage: {
+        "gold-gradient": "linear-gradient(135deg, #a97c2f 0%, #f1d989 45%, #caa14b 70%, #8a6626 100%)",
+        // Same gold family but without the near-white #f1d989 stop — used for
+        // text-clip gradients, since that pale stop reads as low-contrast/
+        // washed-out when it's the text color itself rather than a button fill.
+        "gold-gradient-text": "linear-gradient(135deg, #8a6626 0%, #b3893a 35%, #caa14b 65%, #8a6626 100%)",
+        "ink-gradient": "linear-gradient(180deg, #4a1029 0%, #5e1735 100%)",
+      },
+      boxShadow: {
+        gold: "0 20px 60px -20px rgba(202,161,75,0.35)",
+        soft: "0 24px 60px -24px rgba(0,0,0,0.55)",
+      },
+      keyframes: {
+        fadeUp: {
+          "0%": { opacity: "0", transform: "translateY(24px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        scaleUp: {
+          "0%": { opacity: "0", transform: "scale(0.95)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "0% 50%" },
+          "100%": { backgroundPosition: "100% 50%" },
+        },
+        floatSlow: {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-12px)" },
+        },
+        marquee: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        slideInRight: {
+          "0%": { opacity: "0", transform: "translateX(48px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
+      },
+      animation: {
+        fadeUp: "fadeUp 0.8s cubic-bezier(.22,1,.36,1) forwards",
+        fadeIn: "fadeIn 0.2s ease-out forwards",
+        scaleUp: "scaleUp 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards",
+        shimmer: "shimmer 5s ease-in-out infinite alternate",
+        floatSlow: "floatSlow 6s ease-in-out infinite",
+        marquee: "marquee 32s linear infinite",
+        slideInRight: "slideInRight 0.5s cubic-bezier(.22,1,.36,1) forwards",
+      },
+    },
+  },
+  plugins: [],
+};

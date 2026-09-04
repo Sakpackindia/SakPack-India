@@ -1,0 +1,144 @@
+"use client";
+
+import { useActionState, useState } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
+import { Mail, Lock, Eye, EyeOff, LogIn, Sparkles } from "lucide-react";
+import { login } from "@/actions/auth";
+import { LogoMark } from "@/components/Logo";
+
+const inputClass =
+  "w-full rounded-2xl border border-gold-400/35 bg-ivory/50 py-3.5 pl-12 pr-4 text-base font-semibold text-ink placeholder:text-ink/40 transition-all duration-300 focus:border-gold-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-gold-400/20 hover:border-gold-400/60 shadow-sm";
+
+export default function LoginForm() {
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/account";
+  const oauthError = searchParams.get("error") === "google";
+  const [state, formAction, pending] = useActionState(login, {});
+  const [showPassword, setShowPassword] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative w-full max-w-md overflow-hidden rounded-3xl border border-gold-400/35 bg-white p-7 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.06)] backdrop-blur-xl"
+    >
+      {/* Top Gold Hairline Highlight */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[2.5px] bg-gradient-to-r from-transparent via-gold-400 to-transparent z-20" />
+      <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-gold-400/10 blur-3xl" />
+      <div className="pointer-events-none absolute -left-16 -bottom-16 h-48 w-48 rounded-full bg-ink/5 blur-3xl" />
+
+      {/* Brand Icon Header */}
+      <div className="relative mx-auto mb-4 flex h-16 w-16 items-center justify-center">
+        <motion.span
+          animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.15, 0.4] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0 rounded-full bg-gold-400/40 blur-md"
+        />
+        <motion.div
+          initial={{ scale: 0, rotate: -10 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ delay: 0.15, type: "spring", stiffness: 200, damping: 15 }}
+          className="relative h-16 w-16 drop-shadow-xl"
+        >
+          <LogoMark className="h-full w-full" />
+        </motion.div>
+      </div>
+
+      <div className="text-center">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-gold-400/35 bg-gold-400/15 px-4 py-1 text-base font-black uppercase tracking-[0.2em] text-gold-700">
+          <Sparkles className="h-3.5 w-3.5 text-gold-600 animate-pulse" /> Welcome Back
+        </span>
+
+        <h1 className="mt-3 font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-ink leading-tight">
+          Log In to <span className="text-transparent bg-clip-text bg-gold-gradient-text">Sakpack</span>
+        </h1>
+        <p className="mt-2 text-base text-ink/70 font-medium">Track orders, save favorites, and checkout faster.</p>
+      </div>
+
+      <form action={formAction} className="relative mt-6 space-y-4">
+        <input type="hidden" name="redirect_to" value={redirectTo} />
+        {state.error && (
+          <div className="flex items-center gap-2.5 rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-base sm:text-base font-bold text-red-600 animate-fadeUp">
+            <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse shrink-0" />
+            {state.error}
+          </div>
+        )}
+        {oauthError && (
+          <div className="flex items-center gap-2.5 rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-base sm:text-base font-bold text-red-600 animate-fadeUp">
+            <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse shrink-0" />
+            Google sign-in could not be completed. Please try again.
+          </div>
+        )}
+
+        {/* Email Input */}
+        <div className="relative group">
+          <Mail className="absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-gold-600/80 group-focus-within:text-gold-600 transition-colors duration-300" />
+          <input required name="email" type="email" placeholder="Email Address" className={inputClass} />
+        </div>
+
+        {/* Password Input */}
+        <div className="relative group">
+          <Lock className="absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-gold-600/80 group-focus-within:text-gold-600 transition-colors duration-300" />
+          <input
+            required
+            name="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            className={`${inputClass} pr-12`}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-ink/40 hover:text-gold-600 transition-colors p-1"
+          >
+            {showPassword ? <EyeOff className="h-4.5 w-4.5" /> : <Eye className="h-4.5 w-4.5" />}
+          </button>
+        </div>
+
+        <div className="flex justify-end">
+          <Link
+            href="/forgot-password"
+            className="text-base sm:text-base text-gold-700 hover:text-gold-600 font-extrabold uppercase tracking-wider transition-colors duration-300"
+          >
+            Forgot password?
+          </Link>
+        </div>
+
+        {/* Submit Button */}
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          type="submit"
+          disabled={pending}
+          className="w-full rounded-full bg-ink py-4 text-base sm:text-base font-black uppercase tracking-widest text-gold-300 shadow-xl transition-all duration-300 hover:bg-gold-400 hover:text-ink hover:shadow-[0_0_25px_rgba(202,161,75,0.4)] disabled:opacity-50"
+        >
+          {pending ? (
+            <span className="inline-flex items-center gap-2">
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-gold-300 border-t-transparent" />
+              Logging in…
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-2">
+              <LogIn className="h-4 w-4 text-gold-300" fill="currentColor" />
+              Log In to Account
+            </span>
+          )}
+        </motion.button>
+      </form>
+
+      <p className="relative mt-7 text-center text-base sm:text-base text-ink/70 font-medium">
+        New to Sakpack?{" "}
+        <Link
+          href={`/register?redirect=${encodeURIComponent(redirectTo)}`}
+          className="text-gold-700 hover:text-gold-600 font-extrabold uppercase tracking-wider transition-colors underline underline-offset-4 decoration-gold-400/40"
+        >
+          Create an account
+        </Link>
+      </p>
+    </motion.div>
+  );
+}
