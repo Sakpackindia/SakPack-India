@@ -17,6 +17,46 @@ import { getFeaturedProducts } from "@/actions/products";
 import { getSiteSettings } from "@/actions/settings";
 import { getActiveTestimonials } from "@/actions/site";
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sakpack.in";
+
+export const metadata = {
+  title: "Sakpack India | Loved By 10,000+ Women | Soft Bras, Panties, Palazzos & Cord Sets",
+  description:
+    "Explore Sakpack India – Loved by 10,000+ women for everyday luxury. Shop ultra-soft bras, seamless panties, stylish palazzos, comfortable leggings, and luxury cord sets with free shipping & COD across India.",
+  keywords: [
+    "Sakpack",
+    "Sakpack India",
+    "women innerwear",
+    "bra online India",
+    "panties for women",
+    "palazzo pants",
+    "cotton leggings",
+    "cord set women",
+    "co-ord set",
+    "loungewear women",
+    "everyday fashion women",
+  ],
+  alternates: {
+    canonical: baseUrl,
+  },
+  openGraph: {
+    title: "Sakpack India | Loved By 10,000+ Women | Bras, Panties, Palazzos & Cord Sets",
+    description:
+      "Explore Sakpack India – Loved by 10,000+ women for everyday luxury. Shop ultra-soft bras, seamless panties, stylish palazzos, comfortable leggings, and luxury cord sets.",
+    url: baseUrl,
+    siteName: "Sakpack India",
+    images: [{ url: `${baseUrl}/logo.png`, alt: "Sakpack India Logo" }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sakpack India | Loved By 10,000+ Women | Bras, Panties, Palazzos & Cord Sets",
+    description:
+      "Explore Sakpack India – Loved by 10,000+ women for everyday luxury. Shop ultra-soft bras, seamless panties, stylish palazzos, comfortable leggings, and luxury cord sets.",
+    images: [`${baseUrl}/logo.png`],
+  },
+};
+
 export default async function HomePage() {
   const [categories, featuredProducts, settings, testimonials] =
     await Promise.all([
@@ -41,8 +81,24 @@ export default async function HomePage() {
     }
   };
 
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Sakpack India",
+    url: baseUrl,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${baseUrl}/shop?search={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
       <SiteHeader />
       <main>
         {isOn("home_hero_enabled") && (() => {

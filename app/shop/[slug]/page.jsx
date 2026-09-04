@@ -33,7 +33,14 @@ export async function generateMetadata({ params }) {
   return {
     title: `${title} | Sakpack India`,
     description,
-    keywords: [product.name, product.categoryName || "Handbags", "Sakpack", "buy online India"],
+    keywords: [
+      product.name,
+      product.categoryName || "Women's Wear",
+      "Sakpack",
+      "Sakpack India",
+      "women innerwear",
+      "buy online India",
+    ],
     alternates: {
       canonical: `${baseUrl}/shop/${slug}`,
     },
@@ -48,7 +55,7 @@ export async function generateMetadata({ params }) {
           alt: product.name,
         },
       ],
-      type: "article",
+      type: "product",
     },
     twitter: {
       card: "summary_large_image",
@@ -91,6 +98,7 @@ export default async function ProductDetailPage({ params }) {
       "@type": "Brand",
       name: "Sakpack India",
     },
+    category: safeProduct.categoryName || "Women's Wear",
     offers: {
       "@type": "Offer",
       url: `${baseUrl}/shop/${slug}`,
@@ -104,6 +112,15 @@ export default async function ProductDetailPage({ params }) {
         name: "Sakpack India",
       },
     },
+    ...(safeProduct.review_count > 0 && safeProduct.average_rating > 0
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: safeProduct.average_rating,
+            reviewCount: safeProduct.review_count,
+          },
+        }
+      : {}),
   };
 
   return (

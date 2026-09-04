@@ -11,7 +11,64 @@ import { getProducts } from "@/actions/products";
 
 import { whatsappLink } from "@/lib/constants";
 
-export const metadata = { title: "Shop All Products - Sakpack India" };
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sakpack.in";
+
+export async function generateMetadata({ searchParams }) {
+  const params = await searchParams;
+  const categories = await getActiveCategories();
+  const activeCategory = categories.find((c) => c.id === params.category);
+
+  let title = "Shop Women's Innerwear, Loungewear & Cord Sets | Sakpack India";
+  let description =
+    "Browse the full Sakpack India catalog: soft & breathable Bras, seamless Panties, stylish Palazzos, comfortable Leggings, and luxury Cord Sets. Premium everyday elegance with express shipping & COD.";
+
+  if (activeCategory) {
+    title = `Buy ${activeCategory.name} Online | Sakpack India`;
+    description =
+      activeCategory.description ||
+      `Shop premium soft & comfortable ${activeCategory.name} online from Sakpack India. Loved by 10,000+ women for everyday elegance, perfect fit, and 7-day returns.`;
+  } else if (params.search) {
+    title = `Search results for "${params.search}" | Sakpack India`;
+  }
+
+  const canonicalUrl = activeCategory
+    ? `${baseUrl}/shop?category=${activeCategory.id}`
+    : `${baseUrl}/shop`;
+
+  return {
+    title,
+    description,
+    keywords: [
+      activeCategory?.name || "women innerwear",
+      "Sakpack",
+      "Sakpack India",
+      "buy bras online",
+      "buy panties",
+      "palazzo pants India",
+      "leggings for women",
+      "cord set women",
+      "co-ord set online",
+      "loungewear shop India",
+    ],
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: "Sakpack India",
+      images: [{ url: activeCategory?.image_url || `${baseUrl}/logo.png`, alt: title }],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [activeCategory?.image_url || `${baseUrl}/logo.png`],
+    },
+  };
+}
 
 const PAGE_SIZE = 15;
 

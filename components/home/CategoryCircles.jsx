@@ -75,16 +75,20 @@ function CategoryCircle({ cat, index = 0 }) {
 }
 
 export default function CategoryCircles({ categories, heading = "Shop By Category" }) {
-  const [page, setPage] = useState(0);
   const trackRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const updateScrollState = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
-    setCanScrollLeft(el.scrollLeft > 4);
-    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    setCanScrollLeft(el.scrollLeft > 6);
+    setCanScrollRight(el.scrollLeft < maxScroll - 6);
+    if (maxScroll > 0) {
+      setScrollProgress(Math.min(1, Math.max(0, el.scrollLeft / maxScroll)));
+    }
   }, []);
 
   useEffect(() => {
@@ -100,103 +104,66 @@ export default function CategoryCircles({ categories, heading = "Shop By Categor
   }, [updateScrollState, categories?.length]);
 
   const scrollByAmount = (direction) => {
-    trackRef.current?.scrollBy({ left: direction * 340, behavior: "smooth" });
+    trackRef.current?.scrollBy({ left: direction * 280, behavior: "smooth" });
   };
 
   if (!categories || categories.length === 0) return null;
 
-  const isOverflowing = canScrollLeft || canScrollRight;
-  const totalPages = Math.ceil(categories.length / PER_PAGE);
-  const visible = categories.slice(page * PER_PAGE, page * PER_PAGE + PER_PAGE);
-
   return (
-    <section className="relative bg-[#fcf9f2] py-14 sm:py-20 overflow-hidden">
-      <div className="relative mx-auto max-w-wrap px-6 md:px-12">
-        {/* Title with side golden accent lines like reference */}
-        <Reveal className="mb-10 sm:mb-14 text-center">
+    <section className="relative bg-[#fcf9f2] py-10 sm:py-20 overflow-hidden">
+      <div className="relative mx-auto max-w-wrap px-4 sm:px-6 md:px-12">
+        {/* Title with side golden accent lines */}
+        <Reveal className="mb-8 sm:mb-14 text-center">
           <div className="flex items-center justify-center gap-3 sm:gap-6">
-            <span className="h-[1.5px] w-10 sm:w-20 bg-gradient-to-r from-transparent via-gold-400 to-gold-500" />
-            <h2 className="font-display text-xl font-bold uppercase tracking-[0.2em] text-ink sm:text-2xl md:text-3xl">
+            <span className="h-[1.5px] w-8 sm:w-20 bg-gradient-to-r from-transparent via-gold-400 to-gold-500" />
+            <h2 className="font-display text-lg font-bold uppercase tracking-[0.2em] text-ink sm:text-2xl md:text-3xl">
               {heading}
             </h2>
-            <span className="h-[1.5px] w-10 sm:w-20 bg-gradient-to-l from-transparent via-gold-400 to-gold-500" />
+            <span className="h-[1.5px] w-8 sm:w-20 bg-gradient-to-l from-transparent via-gold-400 to-gold-500" />
           </div>
         </Reveal>
 
-        {/* Mobile: fixed 3-up grid, paginated */}
-        <div className="sm:hidden">
-          <div className="grid grid-cols-3 gap-4">
-            {visible.map((cat, i) => (
-              <CategoryCircle key={cat.id} cat={cat} index={i} />
-            ))}
-          </div>
-
-          {totalPages > 1 && (
-            <div className="mt-8 flex items-center justify-center gap-4">
-              <button
-                onClick={() => setPage((p) => Math.max(0, p - 1))}
-                disabled={page === 0}
-                aria-label="Previous categories"
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-ink/15 bg-white text-ink transition-all disabled:opacity-25 hover:border-ink/40 active:scale-95 shadow-sm"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <div className="flex gap-1.5">
-                {Array.from({ length: totalPages }).map((_, idx) => (
-                  <span
-                    key={idx}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                      page === idx ? "w-5 bg-ink" : "w-1.5 bg-ink/20"
-                    }`}
-                  />
-                ))}
-              </div>
-              <button
-                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-                disabled={page === totalPages - 1}
-                aria-label="Next categories"
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-ink/15 bg-white text-ink transition-all disabled:opacity-25 hover:border-ink/40 active:scale-95 shadow-sm"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Desktop/tablet: single row, horizontally scrollable when it overflows */}
-        <div className="relative hidden sm:block">
-          {isOverflowing && canScrollLeft && (
-            <button
-              onClick={() => scrollByAmount(-1)}
-              aria-label="Scroll categories left"
-              className="absolute left-0 top-1/2 z-20 flex h-11 w-11 -translate-x-5 -translate-y-1/2 items-center justify-center rounded-full border border-ink/15 bg-white text-ink shadow-[0_4px_20px_rgba(74,16,41,0.12)] backdrop-blur-md transition-all duration-300 hover:scale-110 hover:border-ink/40"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </button>
-          )}
-
+        {/* Touch-Swipeable Horizontal Scroll Container */}
+        <div className="relative">
           <div
             ref={trackRef}
-            className={`flex flex-nowrap gap-8 lg:gap-12 overflow-x-auto scroll-smooth px-2 py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
-              isOverflowing ? "justify-start" : "justify-center"
-            }`}
+            className="flex flex-nowrap items-start gap-4 sm:gap-8 lg:gap-12 overflow-x-auto scroll-smooth py-4 px-2 touch-pan-x snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {categories.map((cat, i) => (
-              <Reveal key={cat.id} delay={i * 70}>
+              <div key={cat.id} className="snap-start shrink-0">
                 <CategoryCircle cat={cat} index={i} />
-              </Reveal>
+              </div>
             ))}
           </div>
 
-          {isOverflowing && canScrollRight && (
+          {/* Bottom Control Bar: Left Arrow, Progress Bar, Right Arrow */}
+          <div className="mt-6 flex items-center justify-center gap-4">
+            <button
+              onClick={() => scrollByAmount(-1)}
+              disabled={!canScrollLeft}
+              aria-label="Scroll categories left"
+              className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-gold-400/40 bg-white text-ink shadow-sm backdrop-blur-md transition-all duration-300 disabled:opacity-30 hover:border-gold-500 hover:bg-gold-400/10 active:scale-95"
+            >
+              <ChevronLeft className="h-5 w-5 text-ink" />
+            </button>
+
+            {/* Visual Scroll Progress Bar */}
+            <div className="relative h-1.5 w-24 sm:w-36 overflow-hidden rounded-full bg-gold-400/20">
+              <div
+                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-gold-400 to-gold-600 transition-all duration-150"
+                style={{ width: `${Math.max(20, scrollProgress * 100)}%` }}
+              />
+            </div>
+
             <button
               onClick={() => scrollByAmount(1)}
+              disabled={!canScrollRight}
               aria-label="Scroll categories right"
-              className="absolute right-0 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 translate-x-5 items-center justify-center rounded-full border border-ink/15 bg-white text-ink shadow-[0_4px_20px_rgba(74,16,41,0.12)] backdrop-blur-md transition-all duration-300 hover:scale-110 hover:border-ink/40"
+              className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-gold-400/40 bg-white text-ink shadow-sm backdrop-blur-md transition-all duration-300 disabled:opacity-30 hover:border-gold-500 hover:bg-gold-400/10 active:scale-95"
             >
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRight className="h-5 w-5 text-ink" />
             </button>
-          )}
+          </div>
         </div>
       </div>
     </section>

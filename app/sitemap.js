@@ -1,4 +1,5 @@
 import { getAllProducts } from "@/actions/products";
+import { getActiveCategories } from "@/actions/categories";
 
 export default async function sitemap() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sakpack.in";
@@ -20,7 +21,18 @@ export default async function sitemap() {
   }));
 
   try {
-    const products = await getAllProducts();
+    const [products, categories] = await Promise.all([
+      getAllProducts().catch(() => []),
+      getActiveCategories().catch(() => []),
+    ]);
+
+    const categoryRoutes = (categories || []).map((c) => ({
+      url: `${baseUrl}/shop?category=${c.id}`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "weekly",
+      priority: 0.85,
+    }));
+
     const productRoutes = (products || []).map((p) => ({
       url: `${baseUrl}/shop/${p.slug}`,
       lastModified: p.updated_at ? new Date(p.updated_at).toISOString() : new Date().toISOString(),
@@ -28,7 +40,7 @@ export default async function sitemap() {
       priority: 0.8,
     }));
 
-    return [...staticRoutes, ...productRoutes];
+    return [...staticRoutes, ...categoryRoutes, ...productRoutes];
   } catch {
     return staticRoutes;
   }

@@ -2,9 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 
 const SIZES = {
-  sm: "h-16 w-16 sm:h-18 sm:w-18",
-  md: "h-20 w-20 sm:h-28 sm:w-28",
-  lg: "h-28 w-28 sm:h-36 sm:w-36",
+  xs: "h-14 w-14 sm:h-16 sm:w-16",
+  sm: "h-16 w-16 sm:h-22 sm:w-22",
+  md: "h-20 w-20 sm:h-26 sm:w-26",
+  lg: "h-24 w-24 sm:h-32 sm:w-32",
 };
 
 export function LogoMark({ className = "" }) {

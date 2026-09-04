@@ -36,21 +36,25 @@ const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sakpack.in";
 export const metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Sakpack India | Premium Women's Handbags, Tote Bags & Accessories",
+    default: "Sakpack India | Loved By 10,000+ Women | Bras, Panties, Palazzos, Leggings & Cord Sets",
     template: "%s | Sakpack India",
   },
   description:
-    "Explore Sakpack India for premium handcrafted women's handbags, luxury tote bags, shoulder bags, and fashion accessories. Elegant designs, soft durable fabrics, and 5–7 day express delivery across India.",
+    "Shop Sakpack India for premium handcrafted women's innerwear, loungewear, soft & breathable bras, panties, palazzos, leggings, and luxury cord sets. Featherlight fit, 7-day returns, and Cash on Delivery available across India.",
   keywords: [
     "Sakpack",
     "Sakpack India",
-    "women's handbags",
-    "tote bags",
-    "luxury bags India",
-    "shoulder bags",
-    "handbags for women",
-    "fashion accessories",
-    "online handbag store India",
+    "women innerwear",
+    "bras for women",
+    "cotton panties",
+    "palazzo pants",
+    "women leggings",
+    "cord set",
+    "co-ord set women",
+    "everyday fashion",
+    "loungewear women India",
+    "affordable luxury fashion",
+    "online women clothing store India",
   ],
   authors: [{ name: "Sakpack India" }],
   creator: "Sakpack India",
@@ -69,9 +73,9 @@ export const metadata = {
     apple: "/logo.png",
   },
   openGraph: {
-    title: "Sakpack India | Premium Women's Handbags & Tote Bags",
+    title: "Sakpack India | Loved By 10,000+ Women | Bras, Panties, Palazzos & Cord Sets",
     description:
-      "Explore Sakpack India for premium handcrafted women's handbags, luxury tote bags, shoulder bags, and fashion accessories.",
+      "Explore Sakpack India for premium handcrafted women's innerwear, bras, panties, soft palazzos, comfortable leggings, and luxury cord sets.",
     url: baseUrl,
     siteName: "Sakpack India",
     images: [
@@ -87,9 +91,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sakpack India | Premium Women's Handbags & Tote Bags",
+    title: "Sakpack India | Loved By 10,000+ Women | Bras, Panties, Palazzos & Cord Sets",
     description:
-      "Explore Sakpack India for premium handcrafted women's handbags, luxury tote bags, and fashion accessories.",
+      "Explore Sakpack India for premium handcrafted women's innerwear, bras, panties, soft palazzos, comfortable leggings, and luxury cord sets.",
     images: [`${baseUrl}/logo.png`],
   },
   robots: {
@@ -112,7 +116,16 @@ const jsonLd = {
   url: baseUrl,
   logo: `${baseUrl}/logo.png`,
   description:
-    "Premium handcrafted women's handbags, luxury tote bags, shoulder bags, and fashion accessories.",
+    "Premium handcrafted women's innerwear, bras, panties, soft palazzos, comfortable leggings, and luxury cord sets.",
+  knowsAbout: [
+    "Women's Innerwear",
+    "Bras",
+    "Panties",
+    "Palazzos",
+    "Leggings",
+    "Cord Sets",
+    "Women's Fashion",
+  ],
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+91-9582083441",

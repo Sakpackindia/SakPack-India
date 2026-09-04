@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, ShoppingBag, User, Sparkles, ChevronDown, ChevronRight, LayoutDashboard, LogOut, LogIn, Search, Heart } from "lucide-react";
@@ -23,9 +23,9 @@ function AnnouncementBar({ message }) {
     <div className="relative overflow-hidden border-b border-gold-400/20 bg-ink">
       <div className="absolute inset-x-0 bottom-0 h-px bg-gold-gradient bg-[length:200%_200%] animate-shimmer" />
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-14 w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-400/[0.08] blur-[60px]" />
-      <div className="relative mx-auto flex max-w-wrap items-center justify-center gap-2.5 px-10 py-2 sm:px-12">
+      <div className="relative mx-auto flex max-w-wrap items-center justify-center gap-2.5 px-6 py-2 sm:px-12 sm:py-2.5">
         <Sparkles className="h-3.5 w-3.5 shrink-0 text-gold-300 animate-pulse" />
-        <p className="text-center text-base font-semibold uppercase tracking-[0.15em] text-transparent bg-clip-text bg-gradient-to-r from-gold-100 via-gold-200 to-gold-400 sm:text-base sm:tracking-[0.2em]">
+        <p className="text-center text-xs sm:text-sm font-bold uppercase tracking-[0.15em] text-transparent bg-clip-text bg-gradient-to-r from-gold-100 via-gold-200 to-gold-400 sm:tracking-[0.2em]">
           {message}
         </p>
         <Sparkles className="h-3.5 w-3.5 shrink-0 text-gold-300 animate-pulse" />
@@ -41,6 +41,18 @@ export default function Header({ categories = [], announcement, isLoggedIn = fal
   const { cartCount, setDrawerOpen } = useCart();
   const pathname = usePathname();
   const router = useRouter();
+
+  // Prevent background scrolling when mobile sidebar drawer is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   const navLinks = bundleEnabled
     ? [...STATIC_LINKS.slice(0, 2), { label: "Gift Set", href: "/bundle" }, ...STATIC_LINKS.slice(2)]
@@ -64,7 +76,7 @@ export default function Header({ categories = [], announcement, isLoggedIn = fal
       <div className="absolute inset-x-0 bottom-0 h-px bg-gold-gradient bg-[length:200%_200%] animate-shimmer" />
 
       {/* Main Navbar Row */}
-      <div className="mx-auto flex max-w-wrap items-center justify-between gap-6 px-4 py-1.5 sm:px-8 sm:py-2 md:px-12">
+      <div className="mx-auto flex max-w-wrap items-center justify-between gap-6 px-4 py-2 sm:px-8 sm:py-2.5 md:px-12">
 
         {/* Left Side: Mobile Hamburger + Brand Logo */}
         <div className="flex items-center gap-3">
@@ -78,8 +90,8 @@ export default function Header({ categories = [], announcement, isLoggedIn = fal
 
           {/* Brand Logo (Left) */}
           <Link href="/" className="group flex shrink-0 items-center transition-transform duration-300 hover:opacity-95">
-            <Logo theme="dark" size="sm" className="sm:hidden" href={null} />
-            <Logo theme="dark" size="md" className="hidden sm:inline-flex" href={null} />
+            <Logo theme="dark" size="xs" className="sm:hidden" href={null} />
+            <Logo theme="dark" size="sm" className="hidden sm:inline-flex" href={null} />
           </Link>
         </div>
 
@@ -93,11 +105,10 @@ export default function Header({ categories = [], announcement, isLoggedIn = fal
                 <div key={link.href} className="group relative py-2">
                   <Link
                     href={link.href}
-                    className={`relative flex items-center gap-1.5 text-base font-extrabold uppercase tracking-[0.25em] transition-colors duration-300 ${
-                      pathname?.startsWith("/shop")
-                        ? "text-gold-300"
-                        : "text-ivory/80 hover:text-gold-300"
-                    }`}
+                    className={`relative flex items-center gap-1.5 text-base font-extrabold uppercase tracking-[0.22em] transition-colors duration-300 ${pathname?.startsWith("/shop")
+                      ? "text-gold-300"
+                      : "text-ivory/80 hover:text-gold-300"
+                      }`}
                   >
                     {link.label}
                     <ChevronDown className="w-4 h-4 stroke-[2.5] text-gold-400 group-hover:rotate-180 transition-transform duration-300" />
@@ -149,63 +160,39 @@ export default function Header({ categories = [], announcement, isLoggedIn = fal
                                   {/* Category Icon / Thumbnail Avatar */}
                                   <div className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gold-400/35 bg-gold-400/10 text-gold-700 shadow-xs transition-all duration-300 group-hover/item:border-gold-500 group-hover/item:scale-105 group-hover/item:bg-gold-400/25">
                                     {cat.image_url ? (
-                                      <img src={cat.image_url} alt={cat.name} className="h-10 w-10 aspect-square object-cover rounded-xl" />
+                                      <img src={cat.image_url} alt={cat.name} className="h-full w-full object-cover" />
                                     ) : (
-                                      <HangerGlyph className="h-4.5 w-4.5" />
+                                      <HangerGlyph className="h-5 w-5 text-gold-700" />
                                     )}
                                   </div>
-
-                                  {/* Category Title */}
-                                  <div className="flex-1 min-w-0">
-                                    <p className="font-display text-[13px] font-extrabold uppercase tracking-[0.16em] text-ink transition-colors duration-300 group-hover/item:text-gold-700">
-                                      {cat.name}
-                                    </p>
-                                  </div>
-
-                                  {/* Sliding Right Arrow */}
-                                  <ChevronRight className="h-4 w-4 shrink-0 text-gold-600 opacity-0 -translate-x-2 transition-all duration-300 group-hover/item:opacity-100 group-hover/item:translate-x-0" />
+                                  <span className="text-xs font-black uppercase tracking-wider text-ink transition-colors group-hover/item:text-gold-700">
+                                    {cat.name}
+                                  </span>
                                 </Link>
                               ))}
                             </div>
 
-                            {/* Right Column: Featured Spotlight Card */}
-                            <div className="col-span-5 flex flex-col items-center justify-center gap-3.5 overflow-hidden rounded-2xl border border-gold-400/35 bg-gradient-to-br from-[#4a1029] via-[#380c1e] to-[#1e030e] p-5 text-center shadow-md">
-                              <div className="relative z-10 flex flex-col items-center">
-                                <div className="mb-2 flex h-11 w-11 items-center justify-center rounded-full border border-gold-400/40 bg-gold-400/20 text-gold-300 shadow-[0_0_20px_rgba(202,161,75,0.3)]">
-                                  <Sparkles className="h-5.5 w-5.5 animate-pulse" />
-                                </div>
-                                <span className="text-xs font-black uppercase tracking-[0.22em] text-gold-300">
-                                  Luxury Collection
+                            {/* Right Column: Spotlight Promo Card */}
+                            <div className="col-span-5 flex flex-col justify-between overflow-hidden rounded-2xl border border-gold-400/30 bg-gradient-to-b from-gold-400/10 to-gold-400/5 p-4">
+                              <div>
+                                <span className="inline-block rounded-full bg-gold-400/20 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-gold-700">
+                                  Featured
                                 </span>
-                                <h4 className="mt-1 font-display text-base font-black uppercase tracking-wider text-ivory">
-                                  Everyday Luxe
+                                <h4 className="font-display text-sm font-extrabold uppercase tracking-tight text-ink mt-2">
+                                  New Arrivals
                                 </h4>
-                                <p className="mt-1 text-xs leading-relaxed text-ivory/85 font-medium px-1">
-                                  Handcrafted fits designed for supreme comfort & silhouette.
+                                <p className="text-xs text-ink/75 mt-1 font-medium leading-relaxed">
+                                  Explore our latest everyday luxury collection crafted for ultimate comfort.
                                 </p>
                               </div>
-
                               <Link
                                 href="/shop"
-                                className="group/cta relative w-full flex items-center justify-center gap-1.5 overflow-hidden rounded-full border border-gold-400/50 bg-gold-gradient px-4 py-2.5 text-xs font-black uppercase tracking-wider text-ink shadow-[0_0_20px_rgba(202,161,75,0.35)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(202,161,75,0.6)]"
+                                className="group/cta relative w-full flex items-center justify-center gap-1.5 overflow-hidden rounded-full border border-gold-400/50 bg-gold-gradient px-4 py-2 text-xs font-black uppercase tracking-wider text-ink shadow-[0_0_20px_rgba(202,161,75,0.35)] transition-all duration-300 hover:scale-105"
                               >
                                 <span>Explore All</span>
-                                <ChevronRight className="h-4 w-4 transition-transform duration-300 group-hover/cta:translate-x-0.5" />
+                                <ChevronRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/cta:translate-x-0.5" />
                               </Link>
                             </div>
-                          </div>
-
-                          {/* Footer Link */}
-                          <div className="mt-3.5 flex items-center justify-between border-t border-gold-400/20 px-1.5 pt-3 text-xs">
-                            <span className="flex items-center gap-1.5 font-extrabold uppercase tracking-wider text-ink/70">
-                              ✨ Premium Quality Guaranteed
-                            </span>
-                            <Link
-                              href="/shop"
-                              className="font-black uppercase tracking-widest text-gold-700 transition-colors hover:text-gold-800 hover:underline"
-                            >
-                              View All Products →
-                            </Link>
                           </div>
                         </div>
                       </div>
@@ -219,11 +206,10 @@ export default function Header({ categories = [], announcement, isLoggedIn = fal
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative py-2 text-base font-extrabold uppercase tracking-[0.25em] transition-colors duration-300 ${
-                  isActive
-                    ? "text-gold-300"
-                    : "text-ivory/80 hover:text-gold-300"
-                }`}
+                className={`relative py-2 text-base font-extrabold uppercase tracking-[0.22em] transition-colors duration-300 ${isActive
+                  ? "text-gold-300"
+                  : "text-ivory/80 hover:text-gold-300"
+                  }`}
               >
                 {link.label}
                 {isActive && (
@@ -241,11 +227,10 @@ export default function Header({ categories = [], announcement, isLoggedIn = fal
           <button
             onClick={() => setSearchOpen((o) => !o)}
             aria-label="Search"
-            className={`flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border transition-all duration-300 ${
-              searchOpen
-                ? "border-gold-400 bg-gold-400/20 text-gold-300"
-                : "border-gold-400/30 bg-gold-400/10 text-ivory hover:border-gold-400/60 hover:text-gold-300"
-            }`}
+            className={`flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border transition-all duration-300 ${searchOpen
+              ? "border-gold-400 bg-gold-400/20 text-gold-300"
+              : "border-gold-400/30 bg-gold-400/10 text-ivory hover:border-gold-400/60 hover:text-gold-300"
+              }`}
           >
             <Search className="h-5 w-5 stroke-[2.5]" />
           </button>
@@ -301,126 +286,133 @@ export default function Header({ categories = [], announcement, isLoggedIn = fal
         </div>
       )}
 
-      {/* Mobile Drawer Overlay */}
+      {/* Mobile Drawer Overlay & Sidebar */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-50 bg-[#380b1b] md:hidden animate-fadeUp flex flex-col">
-          <div className="absolute inset-0 bg-radial-gradient opacity-[0.03] pointer-events-none" />
-          
-          {/* Drawer Top Bar */}
-          <div className="flex items-center justify-between px-5 py-4 border-b border-gold-400/20 shrink-0 bg-[#2d0916]">
-            {/* Logo */}
-            <Logo theme="dark" size="sm" href={null} />
+        <div className="fixed inset-0 z-[100] md:hidden flex">
+          {/* Semi-transparent Backdrop (tap to close) */}
+          <div
+            onClick={() => setMobileOpen(false)}
+            className="fixed inset-0 bg-black/75 backdrop-blur-xs transition-opacity duration-300 animate-fadeIn"
+          />
 
-            {/* Close Toggle */}
-            <button
-              onClick={() => setMobileOpen(false)}
-              aria-label="Close menu"
-              className="p-2.5 rounded-full border border-gold-400/40 bg-gold-400/10 text-ivory hover:text-gold-300 hover:border-gold-300 transition-all shadow-sm"
-            >
-              <X className="h-6 w-6 stroke-[2.5]" />
-            </button>
-          </div>
+          {/* Slide-out Sidebar Panel */}
+          <div className="relative z-10 flex h-dvh max-h-dvh h-screen w-[85vw] max-w-[340px] flex-col border-r border-gold-400/35 bg-[#380b1b] shadow-2xl animate-slideRight">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(202,161,75,0.12),transparent_70%)] pointer-events-none" />
 
-          <div className="flex-1 overflow-y-auto px-5 py-6 space-y-6">
-            {/* Mobile Search Bar in Drawer */}
-            <form onSubmit={(e) => { handleSearch(e); setMobileOpen(false); }} className="flex items-center gap-3 rounded-2xl border border-gold-400/45 bg-white/10 px-4.5 py-3 shadow-md backdrop-blur-sm">
-              <Search className="h-5 w-5 text-gold-300 shrink-0 stroke-[2.5]" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products, collections..."
-                className="flex-1 bg-transparent text-base font-semibold text-ivory placeholder:text-ivory/50 focus:outline-none"
-              />
-              <button type="submit" className="rounded-full bg-gold-gradient px-4 py-1.5 text-xs font-black uppercase tracking-wider text-ink shadow-sm">
-                Go
+            {/* Drawer Top Bar */}
+            <div className="flex items-center justify-between px-4 py-3 sm:px-5 sm:py-4 border-b border-gold-400/20 shrink-0 bg-[#2d0916]">
+              <Logo theme="dark" size="xs" href="/" />
+
+              <button
+                onClick={() => setMobileOpen(false)}
+                aria-label="Close menu"
+                className="p-2 rounded-full border border-gold-400/40 bg-gold-400/10 text-ivory hover:text-gold-300 hover:border-gold-300 active:scale-95 transition-all shadow-sm"
+              >
+                <X className="h-5.5 w-5.5 stroke-[2.5]" />
               </button>
-            </form>
+            </div>
 
-            {/* Navigation Links */}
-            <nav className="flex flex-col gap-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className={`flex items-center justify-between rounded-2xl px-5 py-3.5 font-display text-lg sm:text-xl font-extrabold uppercase tracking-wider transition-all ${
-                    pathname === link.href
-                      ? "bg-gold-400/20 text-gold-200 border border-gold-400/35 shadow-md"
-                      : "text-ivory hover:bg-gold-400/10 hover:text-gold-300"
-                  }`}
-                >
-                  <span>{link.label}</span>
-                  <ChevronRight className="h-5 w-5 text-gold-400/70" />
-                </Link>
-              ))}
+            <div className="flex-1 overflow-y-auto px-4 py-5 space-y-5 touch-pan-y overscroll-contain">
+              {/* Search Bar */}
+              <form onSubmit={(e) => { handleSearch(e); setMobileOpen(false); }} className="flex items-center gap-2.5 rounded-2xl border border-gold-400/45 bg-white/10 px-3.5 py-2.5 shadow-md backdrop-blur-sm">
+                <Search className="h-4.5 w-4.5 text-gold-300 shrink-0 stroke-[2.5]" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products..."
+                  className="flex-1 bg-transparent text-sm sm:text-base font-semibold text-ivory placeholder:text-ivory/50 focus:outline-none min-w-0"
+                />
+                <button type="submit" className="rounded-full bg-gold-gradient px-3 py-1 text-xs font-black uppercase tracking-wider text-ink shadow-sm active:scale-95 shrink-0">
+                  Go
+                </button>
+              </form>
 
-              {isLoggedIn ? (
-                <div className="flex items-center gap-2.5 mt-2">
+              {/* Navigation Links */}
+              <nav className="flex flex-col gap-2">
+                {navLinks.map((link) => (
                   <Link
-                    href="/account"
+                    key={link.href}
+                    href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className="flex flex-1 items-center gap-3 rounded-2xl px-5 py-3.5 font-display text-lg font-extrabold uppercase tracking-wider text-gold-200 bg-gold-400/15 border border-gold-400/30 hover:bg-gold-400/20 transition-all shadow-sm"
+                    className={`flex items-center justify-between rounded-2xl px-4 py-3.5 font-display text-lg font-black uppercase tracking-widest transition-all ${
+                      pathname === link.href
+                        ? "bg-gold-400/25 text-gold-200 border border-gold-400/40 shadow-md"
+                        : "text-ivory bg-white/5 border border-gold-400/15 hover:bg-gold-400/10 hover:text-gold-300 active:scale-[0.98]"
+                    }`}
                   >
-                    <LayoutDashboard className="h-5.5 w-5.5 text-gold-300" />
-                    Account
+                    <span>{link.label}</span>
+                    <ChevronRight className="h-5 w-5 text-gold-400 shrink-0" />
                   </Link>
-                  <form action={logout}>
-                    <button
-                      type="submit"
-                      aria-label="Log out"
-                      className="flex h-13 w-13 items-center justify-center rounded-2xl border border-gold-400/30 bg-gold-400/10 text-ivory hover:border-red-400/40 hover:bg-red-500/15 hover:text-red-300 transition-all shadow-sm"
-                    >
-                      <LogOut className="h-5.5 w-5.5" />
-                    </button>
-                  </form>
-                </div>
-              ) : (
-                <Link
-                  href="/login"
-                  onClick={() => setMobileOpen(false)}
-                  className="btn-gold flex items-center justify-center gap-2.5 py-4 text-base sm:text-lg font-black tracking-widest uppercase rounded-2xl mt-2 shadow-xl"
-                >
-                  <LogIn className="h-5 w-5" />
-                  Login / Account
-                </Link>
-              )}
-            </nav>
+                ))}
 
-            {/* Categories Section */}
-            {categories.length > 0 && (
-              <div className="border-t border-gold-400/20 pt-6">
-                <div className="flex items-center justify-between px-1 pb-3.5">
-                  <p className="flex items-center gap-2 text-base font-black uppercase tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-gold-100 to-gold-400">
-                    <Sparkles className="h-4 w-4 text-gold-300 animate-pulse" />
-                    Browse Collections
-                  </p>
-                  <span className="text-xs font-extrabold text-gold-300/80 uppercase tracking-widest bg-gold-400/15 border border-gold-400/30 px-2.5 py-1 rounded-full">{categories.length} Items</span>
-                </div>
-                <div className="grid grid-cols-1 gap-2.5">
-                  {categories.map((cat) => (
+                {isLoggedIn ? (
+                  <div className="flex items-center gap-2 mt-1.5">
                     <Link
-                      key={cat.id}
-                      href={`/shop?category=${cat.id}`}
+                      href="/account"
                       onClick={() => setMobileOpen(false)}
-                      className="group flex items-center justify-between rounded-2xl border border-gold-400/25 bg-gold-400/10 p-3.5 text-ivory transition-all active:scale-[0.98] hover:border-gold-400/50 hover:bg-gold-400/20 shadow-xs"
+                      className="flex flex-1 items-center gap-2.5 rounded-2xl px-4 py-3.5 font-display text-base sm:text-lg font-black uppercase tracking-widest text-gold-200 bg-gold-400/20 border border-gold-400/35 hover:bg-gold-400/25 transition-all shadow-md min-w-0"
                     >
-                      <div className="flex items-center gap-3.5 min-w-0">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-gold-400/35 bg-gold-400/15 text-gold-300 overflow-hidden shadow-xs">
-                          {cat.image_url ? (
-                            <img src={cat.image_url} alt={cat.name} className="h-full w-full rounded-xl object-cover" />
-                          ) : (
-                            <HangerGlyph className="h-5 w-5" />
-                          )}
-                        </div>
-                        <p className="text-base sm:text-lg font-extrabold uppercase tracking-wider text-ivory group-hover:text-gold-200 truncate">{cat.name}</p>
-                      </div>
-                      <ChevronRight className="h-5 w-5 shrink-0 text-gold-300 group-hover:translate-x-1 transition-transform" />
+                      <LayoutDashboard className="h-5 w-5 text-gold-300 shrink-0" />
+                      <span className="truncate">Account</span>
                     </Link>
-                  ))}
+                    <form action={logout}>
+                      <button
+                        type="submit"
+                        aria-label="Log out"
+                        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-gold-400/30 bg-gold-400/10 text-ivory hover:border-red-400/40 hover:bg-red-500/15 hover:text-red-300 transition-all shadow-sm active:scale-95"
+                      >
+                        <LogOut className="h-5 w-5" />
+                      </button>
+                    </form>
+                  </div>
+                ) : (
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileOpen(false)}
+                    className="btn-gold flex items-center justify-center gap-2 py-3.5 text-base font-black tracking-widest uppercase rounded-2xl mt-1.5 shadow-xl active:scale-[0.98]"
+                  >
+                    <LogIn className="h-5 w-5 shrink-0" />
+                    Login / Account
+                  </Link>
+                )}
+              </nav>
+
+              {/* Categories Section */}
+              {categories.length > 0 && (
+                <div className="border-t border-gold-400/20 pt-5">
+                  <div className="flex items-center justify-between px-1 pb-3">
+                    <p className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.18em] text-transparent bg-clip-text bg-gradient-to-r from-gold-100 to-gold-400">
+                      <Sparkles className="h-4 w-4 text-gold-300 animate-pulse shrink-0" />
+                      Collections
+                    </p>
+                    <span className="text-[10px] font-black text-gold-300 uppercase tracking-widest bg-gold-400/20 border border-gold-400/35 px-2 py-0.5 rounded-full">{categories.length} Items</span>
+                  </div>
+                  <div className="grid grid-cols-1 gap-2">
+                    {categories.map((cat) => (
+                      <Link
+                        key={cat.id}
+                        href={`/shop?category=${cat.id}`}
+                        onClick={() => setMobileOpen(false)}
+                        className="group flex items-center justify-between rounded-2xl border border-gold-400/30 bg-gold-400/10 p-3 text-ivory transition-all active:scale-[0.98] hover:border-gold-400/50 hover:bg-gold-400/20 shadow-xs"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-gold-400/35 bg-gold-400/15 text-gold-300 overflow-hidden shadow-xs">
+                            {cat.image_url ? (
+                              <img src={cat.image_url} alt={cat.name} className="h-full w-full rounded-xl object-cover" />
+                            ) : (
+                              <HangerGlyph className="h-4.5 w-4.5" />
+                            )}
+                          </div>
+                          <p className="text-base font-black uppercase tracking-wider text-ivory group-hover:text-gold-200 truncate">{cat.name}</p>
+                        </div>
+                        <ChevronRight className="h-4.5 w-4.5 shrink-0 text-gold-300 group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       )}
