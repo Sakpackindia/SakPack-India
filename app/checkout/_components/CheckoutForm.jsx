@@ -386,10 +386,10 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {codEnabled && (
                 <label
-                  className={`group relative flex cursor-pointer items-start gap-3.5 rounded-2xl border p-4.5 sm:p-5 transition-all duration-300 ${
+                  className={`group relative flex cursor-pointer items-start gap-3.5 rounded-2xl border p-4 sm:p-5 transition-all duration-300 ${
                     paymentMethod === "COD"
-                      ? "border-gold-400 bg-gold-400/15 shadow-md ring-2 ring-gold-400/40"
-                      : "border-gold-400/25 bg-ivory/40 hover:border-gold-400/60"
+                      ? "border-gold-500 bg-gold-400/15 shadow-md ring-2 ring-gold-400/30"
+                      : "border-gold-400/30 bg-ivory/40 hover:border-gold-400/60"
                   }`}
                 >
                   <input
@@ -400,23 +400,23 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
                     className="sr-only"
                   />
 
-                  <div className={`mt-0.5 flex h-5.5 w-5.5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                  <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-300 ${
                     paymentMethod === "COD" ? "border-gold-600 bg-gold-600 shadow-sm" : "border-ink/30 bg-white"
                   }`}>
-                    <div className={`h-2.5 w-2.5 rounded-full bg-white transition-transform duration-300 ${paymentMethod === "COD" ? "scale-100" : "scale-0"}`} />
+                    <div className={`h-2 w-2 rounded-full bg-white transition-transform duration-300 ${paymentMethod === "COD" ? "scale-100" : "scale-0"}`} />
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                       <div className="flex items-center gap-2">
-                        <Banknote className={`h-5 w-5 ${paymentMethod === "COD" ? "text-gold-700" : "text-ink/60"}`} />
-                        <span className="font-display text-base sm:text-lg font-black uppercase tracking-wider text-ink">Cash on Delivery</span>
+                        <Banknote className={`h-5 w-5 shrink-0 ${paymentMethod === "COD" ? "text-gold-700" : "text-ink/60"}`} />
+                        <span className="font-display text-base font-black uppercase tracking-wider text-ink">Cash on Delivery</span>
                       </div>
-                      <span className="text-xs font-extrabold uppercase tracking-wider text-amber-800 bg-amber-400/20 border border-amber-400/40 px-2 py-0.5 rounded-full">
+                      <span className="self-start sm:self-auto text-[11px] font-black uppercase tracking-wider text-amber-800 bg-amber-400/20 border border-amber-400/40 px-2.5 py-0.5 rounded-full shrink-0">
                         +₹{shipping.cod_charge} COD Fee
                       </span>
                     </div>
-                    <p className="mt-2 text-sm sm:text-base text-ink/80 font-semibold leading-relaxed">
+                    <p className="mt-2 text-xs sm:text-sm text-ink/75 font-medium leading-relaxed">
                       Pay cash upon delivery. Nominal ₹{shipping.cod_charge} COD handling &amp; verification fee applies.
                     </p>
                   </div>
@@ -425,10 +425,10 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
 
               {razorpayEnabled && (
                 <label
-                  className={`group relative flex cursor-pointer items-start gap-3.5 rounded-2xl border p-4.5 sm:p-5 transition-all duration-300 ${
+                  className={`group relative flex cursor-pointer items-start gap-3.5 rounded-2xl border p-4 sm:p-5 transition-all duration-300 ${
                     paymentMethod === "RAZORPAY"
-                      ? "border-gold-400 bg-gold-400/15 shadow-md ring-2 ring-gold-400/40"
-                      : "border-gold-400/25 bg-ivory/40 hover:border-gold-400/60"
+                      ? "border-gold-500 bg-gold-400/15 shadow-md ring-2 ring-gold-400/30"
+                      : "border-gold-400/30 bg-ivory/40 hover:border-gold-400/60"
                   }`}
                 >
                   <input
@@ -439,23 +439,23 @@ export default function CheckoutForm({ codEnabled, razorpayEnabled, shipping, qu
                     className="sr-only"
                   />
 
-                  <div className={`mt-0.5 flex h-5.5 w-5.5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                  <div className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-300 ${
                     paymentMethod === "RAZORPAY" ? "border-gold-600 bg-gold-600 shadow-sm" : "border-ink/30 bg-white"
                   }`}>
-                    <div className={`h-2.5 w-2.5 rounded-full bg-white transition-transform duration-300 ${paymentMethod === "RAZORPAY" ? "scale-100" : "scale-0"}`} />
+                    <div className={`h-2 w-2 rounded-full bg-white transition-transform duration-300 ${paymentMethod === "RAZORPAY" ? "scale-100" : "scale-0"}`} />
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center justify-between gap-1.5">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                       <div className="flex items-center gap-2">
-                        <CreditCard className={`h-5 w-5 ${paymentMethod === "RAZORPAY" ? "text-gold-700" : "text-ink/60"}`} />
-                        <span className="font-display text-base sm:text-lg font-black uppercase tracking-wider text-ink">Pay Online</span>
+                        <CreditCard className={`h-5 w-5 shrink-0 ${paymentMethod === "RAZORPAY" ? "text-gold-700" : "text-ink/60"}`} />
+                        <span className="font-display text-base font-black uppercase tracking-wider text-ink">Pay Online</span>
                       </div>
-                      <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-400/20 border border-emerald-400/40 px-2 py-0.5 rounded-full">
+                      <span className="self-start sm:self-auto text-[11px] font-black uppercase tracking-wider text-emerald-800 bg-emerald-400/20 border border-emerald-400/40 px-2.5 py-0.5 rounded-full shrink-0">
                         Fastest
                       </span>
                     </div>
-                    <p className="mt-2 text-sm sm:text-base text-ink/80 font-semibold leading-relaxed">
+                    <p className="mt-2 text-xs sm:text-sm text-ink/75 font-medium leading-relaxed">
                       Instant &amp; secure payment via UPI (GPay, PhonePe, Paytm), Cards &amp; Netbanking.
                     </p>
                   </div>

@@ -105,7 +105,7 @@ export default async function OrderDetailPage({ params }) {
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-ink font-bold">{item.product_name}</p>
+                        <p className="text-ink font-bold leading-snug break-words">{item.product_name}</p>
                         <p className="flex flex-wrap items-center gap-1.5 text-ink/60 mt-1 text-sm sm:text-base font-semibold">
                           {item.color_hex && (
                             <span

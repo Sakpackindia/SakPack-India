@@ -225,39 +225,43 @@ export default function AccountTabs({ profile, orders }) {
                       </span>
                     </div>
                   </div>
-                  <ul className="mt-4 space-y-2.5 border-t border-ink/10 pt-4 text-sm sm:text-base text-ink/80 font-semibold">
+                  <ul className="mt-4 space-y-3 border-t border-ink/10 pt-4 text-sm sm:text-base text-ink/80 font-semibold">
                     {order.order_items.map((item, idx) => {
                       const { color, size } = splitVariantName(item.variant_name);
                       return (
-                        <li key={idx} className="flex items-center gap-2.5">
-                          <div className="relative h-11 w-11 sm:h-12 sm:w-12 shrink-0 overflow-hidden rounded-lg border border-gold-400/25 bg-white shadow-inner">
+                        <li key={idx} className="flex items-start sm:items-center gap-3">
+                          <div className="relative h-12 w-12 sm:h-13 sm:w-13 shrink-0 overflow-hidden rounded-xl border border-gold-400/30 bg-white shadow-inner">
                             {item.products?.featured_image_url ? (
-                              <Image src={item.products.featured_image_url} alt="" fill sizes="48px" className="object-cover" />
+                              <Image src={item.products.featured_image_url} alt="" fill sizes="52px" className="object-cover" />
                             ) : (
                               <div className="flex h-full w-full items-center justify-center">
                                 <HangerGlyph className="h-5 w-auto text-ink/20" />
                               </div>
                             )}
                           </div>
-                          <span className="min-w-0 flex-1 truncate">
-                            {item.product_name}{" "}
-                            {(color || item.color_hex || size) && (
-                              <span className="inline-flex items-center gap-1.5">
-                                (
-                                {item.color_hex && (
-                                  <span
-                                    className="h-5 w-5 sm:h-5.5 sm:w-5.5 shrink-0 rounded-full border-2 border-gold-400/40 shadow-sm"
-                                    style={{ backgroundColor: item.color_hex }}
-                                  />
-                                )}
-                                {color && <span>{color}</span>}
-                                {color && size && <span className="text-ink/30">·</span>}
-                                {size && <span>Size - {size}</span>}
-                                )
-                              </span>
-                            )}{" "}
-                            X{item.quantity}
-                          </span>
+                          <div className="min-w-0 flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                            <div className="text-sm sm:text-base text-ink font-semibold leading-relaxed">
+                              <span className="font-extrabold text-ink">{item.product_name}</span>{" "}
+                              {(color || item.color_hex || size) && (
+                                <span className="inline-flex items-center flex-wrap gap-1 text-ink/70">
+                                  (
+                                  {item.color_hex && (
+                                    <span
+                                      className="h-4 w-4 sm:h-4.5 sm:w-4.5 shrink-0 rounded-full border border-gold-400/40 shadow-xs inline-block align-middle"
+                                      style={{ backgroundColor: item.color_hex }}
+                                    />
+                                  )}
+                                  {color && <span>{color}</span>}
+                                  {color && size && <span className="text-ink/30">·</span>}
+                                  {size && <span>Size - {size}</span>}
+                                  )
+                                </span>
+                              )}
+                            </div>
+                            <span className="shrink-0 text-xs sm:text-sm font-extrabold text-gold-700 bg-gold-400/15 border border-gold-400/30 px-2.5 py-0.5 rounded-full w-fit">
+                              Qty: {item.quantity}
+                            </span>
+                          </div>
                         </li>
                       );
                     })}

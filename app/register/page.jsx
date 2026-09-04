@@ -13,7 +13,7 @@ export default function RegisterPage() {
       <main className="relative grid overflow-hidden lg:grid-cols-2">
         <AuthShowcase />
 
-        <div className="relative flex min-h-[85vh] items-center justify-center bg-ivory px-6 py-10 sm:py-14 overflow-hidden">
+        <div className="relative flex min-h-[75vh] sm:min-h-[85vh] items-center justify-center bg-ivory px-4 py-8 sm:px-6 sm:py-14 overflow-hidden">
           {/* Background Ambient Glows */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
             <div className="absolute -top-[10%] left-[-20%] w-[500px] h-[500px] rounded-full bg-gold-400/10 blur-[130px] animate-pulse-glow" />

@@ -287,17 +287,26 @@ export default function ProductPurchasePanel({ product, variants }) {
 
 
       {/* Sticky mobile add-to-cart bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 flex items-center gap-3.5 border-t border-gold-400/15 bg-white/95 px-4.5 py-3.5 shadow-[0_-8px_30px_rgba(0,0,0,0.08)] backdrop-blur-lg sm:hidden">
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-base text-ink/60 font-semibold">{product.name}</p>
-          <p className="font-display text-lg font-black text-ink">₹{selected.price.toLocaleString("en-IN")}</p>
+      <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-gold-400/25 bg-white/98 px-4 py-3 pb-[max(0.85rem,env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur-xl sm:hidden">
+        <div className="min-w-0 flex-1 flex flex-col justify-center pr-1">
+          <p className="truncate text-xs text-ink/65 font-bold uppercase tracking-wider">{product.name}</p>
+          <div className="flex items-baseline gap-1.5 mt-0.5">
+            <span className="font-display text-xl font-black text-ink tracking-tight leading-none">
+              ₹{selected?.price ? selected.price.toLocaleString("en-IN") : "0"}
+            </span>
+            {selected?.original_price && selected.original_price > selected.price && (
+              <span className="text-xs text-ink/40 line-through font-semibold leading-none">
+                ₹{selected.original_price.toLocaleString("en-IN")}
+              </span>
+            )}
+          </div>
         </div>
         <button
           onClick={handleAdd}
           disabled={!inStock}
-          className="btn-gold shrink-0 px-7 py-3.5 text-base sm:text-lg font-extrabold disabled:cursor-not-allowed disabled:opacity-40 flex items-center gap-2"
+          className="btn-gold shrink-0 px-5 py-3 text-sm font-extrabold tracking-wider uppercase disabled:cursor-not-allowed disabled:opacity-40 flex items-center justify-center gap-1.5 rounded-full shadow-md active:scale-95"
         >
-          <ShoppingBag className="h-4.5 w-4.5" /> {inStock ? "Add to Bag" : "Sold Out"}
+          <ShoppingBag className="h-4 w-4" /> {inStock ? "Add to Bag" : "Sold Out"}
         </button>
       </div>
     </div>

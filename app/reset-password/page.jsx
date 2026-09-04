@@ -9,7 +9,7 @@ export default function ResetPasswordPage() {
   return (
     <>
       <SiteHeader />
-      <main className="relative flex min-h-[85vh] items-center justify-center bg-ivory px-6 py-20 overflow-hidden">
+      <main className="relative flex min-h-[75vh] sm:min-h-[85vh] items-center justify-center bg-ivory px-4 py-10 sm:px-6 sm:py-20 overflow-hidden">
         {/* Background Ambient Glows */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
           <div className="absolute -top-[10%] left-[-20%] w-[500px] h-[500px] rounded-full bg-gold-400/10 blur-[130px] animate-pulse-glow" />
