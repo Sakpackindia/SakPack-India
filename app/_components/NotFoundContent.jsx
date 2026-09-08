@@ -67,14 +67,14 @@ export default function NotFoundContent() {
         >
           <Link
             href="/shop"
-            className="group inline-flex items-center gap-2 rounded-full bg-ink px-9 py-4 text-base font-black uppercase tracking-widest text-gold-300 shadow-xl transition-all duration-300 hover:bg-gold-400 hover:text-ink hover:scale-105"
+            className="group inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-ink px-8 py-4 text-sm sm:text-base font-black uppercase tracking-wider text-gold-300 shadow-xl transition-all duration-300 hover:bg-gold-400 hover:text-ink hover:scale-105 sm:w-auto"
           >
-            Explore Shop Collection
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            Explore Shop
+            <ArrowRight className="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
           <Link
             href="/"
-            className="inline-flex rounded-full border border-gold-400/40 bg-white px-9 py-4 text-base font-black uppercase tracking-widest text-ink transition-all duration-300 hover:border-gold-400 hover:bg-gold-400/10 hover:scale-105"
+            className="inline-flex w-full items-center justify-center whitespace-nowrap rounded-full border border-gold-400/40 bg-white px-8 py-4 text-sm sm:text-base font-black uppercase tracking-wider text-ink transition-all duration-300 hover:border-gold-400 hover:bg-gold-400/10 hover:scale-105 sm:w-auto"
           >
             Back To Homepage
           </Link>
