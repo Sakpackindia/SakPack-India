@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { ZoomIn, X, ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { ZoomIn, X, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Play } from "lucide-react";
 import HangerGlyph from "@/components/HangerGlyph";
 import { useProductVariant } from "./ProductVariantContext";
 
-export default function ProductGallery({ images, name, featuredImage }) {
+export default function ProductGallery({ images, name, featuredImage, videoUrl }) {
   const ctx = useProductVariant();
   const selectedColor = ctx?.selected?.color || null;
   const selectedSizeName = ctx?.selected?.variant_name || null;
@@ -32,6 +32,10 @@ export default function ProductGallery({ images, name, featuredImage }) {
         ? [{ id: "featured", image_url: featuredImage }]
         : [{ id: "placeholder", image_url: null }];
 
+  // The video is product-level (not tied to a color/size), so it always
+  // appears as one extra slide at the end regardless of selection.
+  if (videoUrl) list.push({ id: "video", type: "video", video_url: videoUrl });
+
   const [active, setActive] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
@@ -39,7 +43,9 @@ export default function ProductGallery({ images, name, featuredImage }) {
     setActive(0);
   }, [ctx?.selected?.id]);
 
-  const activeImage = list[active]?.image_url;
+  const activeItem = list[active];
+  const isVideo = activeItem?.type === "video";
+  const activeImage = activeItem?.image_url;
 
   return (
     <div className="w-full relative">
@@ -83,8 +89,14 @@ export default function ProductGallery({ images, name, featuredImage }) {
                       : "border-gold-400/25 bg-white/90 opacity-70 hover:opacity-100 hover:border-gold-400"
                   }`}
                 >
-                  {img.image_url && (
-                    <Image src={img.image_url} alt="" fill sizes="64px" className="rounded-xl object-contain p-1.5" />
+                  {img.type === "video" ? (
+                    <div className="flex h-full w-full items-center justify-center bg-ink">
+                      <Play className="h-5 w-5 fill-gold-300 text-gold-300" />
+                    </div>
+                  ) : (
+                    img.image_url && (
+                      <Image src={img.image_url} alt="" fill sizes="64px" className="rounded-xl object-contain p-1.5" />
+                    )
                   )}
                 </motion.button>
               ))}
@@ -111,7 +123,23 @@ export default function ProductGallery({ images, name, featuredImage }) {
           <div className="absolute inset-x-0 top-0 h-px bg-gold-gradient bg-[length:200%_200%] animate-shimmer z-20" />
 
           <AnimatePresence mode="wait">
-            {activeImage ? (
+            {isVideo ? (
+              <motion.div
+                key="video"
+                initial={{ opacity: 0, scale: 1.03 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-0"
+              >
+                <video
+                  src={activeItem.video_url}
+                  controls
+                  playsInline
+                  className="h-full w-full rounded-[2rem] object-contain bg-black p-3 sm:p-5"
+                />
+              </motion.div>
+            ) : activeImage ? (
               <motion.div
                 key={activeImage}
                 initial={{ opacity: 0, scale: 1.03 }}
@@ -136,7 +164,7 @@ export default function ProductGallery({ images, name, featuredImage }) {
             )}
           </AnimatePresence>
 
-          {activeImage && (
+          {activeImage && !isVideo && (
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}

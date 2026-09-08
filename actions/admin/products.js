@@ -95,6 +95,7 @@ function parseProductFields(formData) {
     care_instructions: formData.get("care_instructions") || null,
     badge: formData.get("badge") || null,
     featured_image_url: formData.get("featured_image_url") || null,
+    video_url: formData.get("video_url") || null,
     seo_title: formData.get("seo_title") || null,
     seo_description: formData.get("seo_description") || null,
     is_active: formData.get("is_active") === "on",

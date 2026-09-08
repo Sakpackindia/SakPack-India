@@ -141,7 +141,7 @@ export default async function Footer() {
       {/* Bottom Bar (Dark Wine / Ink) */}
       <div className="bg-ink text-ivory">
         <div className="mx-auto flex max-w-wrap flex-col items-center gap-2 px-4 py-3.5 text-center text-sm sm:text-sm text-ivory/85 font-medium sm:flex-row sm:justify-between md:px-12">
-          <p>&copy; {new Date().getFullYear()} Sakpack India. All Rights Reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Sackpack India. All Rights Reserved.</p>
           <p>We deliver style, comfort &amp; confidence. <span className="text-gold-400">💛</span></p>
         </div>
       </div>

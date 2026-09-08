@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ArrowLeft, Package, MapPin, CreditCard } from "lucide-react";
 import { getOrderById } from "@/actions/admin/orders";
 import OrderStatusManager from "./_components/OrderStatusManager";
-import DelhiveryShipmentManager from "./_components/DelhiveryShipmentManager";
+import ShipmentManager from "./_components/ShipmentManager";
 import HangerGlyph from "@/components/HangerGlyph";
 import { splitVariantName } from "@/lib/variantDisplay";
 
@@ -164,7 +164,7 @@ export default async function AdminOrderDetailPage({ params }) {
               <span className="font-mono text-ink font-bold select-all">{order.razorpay_payment_id}</span>
             </div>
           )}
-          <DelhiveryShipmentManager order={order} />
+          <ShipmentManager order={order} />
         </div>
       </div>
     </div>

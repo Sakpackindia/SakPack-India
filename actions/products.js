@@ -144,7 +144,7 @@ export async function getProductBySlug(slug) {
       .select(`
         id, name, slug, category_id, is_active, badge,
         average_rating, review_count, short_description, description,
-        color, fabric, fit_type, care_instructions, featured_image_url,
+        color, fabric, fit_type, care_instructions, featured_image_url, video_url,
         product_images ( id, image_url, sort_order, variant_name, color ),
         product_variants ( id, variant_name, color, color_hex, price, original_price, stock_quantity, is_active ),
         product_faqs ( id, question, answer, display_order )

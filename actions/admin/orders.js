@@ -30,7 +30,7 @@ export async function getOrderById(id) {
     .select(`
       id, order_number, subtotal, shipping_cost, discount_amount, coupon_discount, quantity_discount, bundle_discount, coupon_code, total_amount,
       payment_method, payment_status, order_status, created_at, razorpay_order_id, razorpay_payment_id,
-      tracking_number, courier_name, shipment_status, shipped_at,
+      tracking_number, courier_name, shipment_status, shipped_at, shiprocket_order_id, shiprocket_shipment_id,
       profiles ( full_name, email, phone ),
       addresses ( full_name, phone, address_line_1, address_line_2, city, state, postal_code, country ),
       order_items ( id, product_name, variant_name, color_hex, price_at_purchase, quantity, line_total, products ( featured_image_url ) )

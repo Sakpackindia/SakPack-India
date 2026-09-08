@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Save } from "lucide-react";
 import { createProduct, updateProduct } from "@/actions/admin/products";
 import ImageUploader from "@/components/admin/ImageUploader";
+import VideoUploader from "@/components/admin/VideoUploader";
 import VariantsEditor from "./VariantsEditor";
 import ColorImageMapper from "./ColorImageMapper";
 import FaqsEditor from "./FaqsEditor";
@@ -25,6 +26,7 @@ export default function ProductForm({ product, categories }) {
   const [isFeatured, setIsFeatured] = useState(product?.is_featured ?? false);
 
   const [featuredImage, setFeaturedImage] = useState(product?.featured_image_url || null);
+  const [video, setVideo] = useState(product?.video_url || null);
   const [gallery, setGallery] = useState(
     (product?.product_images || [])
       .slice()
@@ -52,6 +54,7 @@ export default function ProductForm({ product, categories }) {
     <form action={formAction} onSubmit={handleSubmit} className="space-y-6">
       {isEditing && <input type="hidden" name="id" value={product.id} />}
       <input type="hidden" name="featured_image_url" value={featuredImage || ""} />
+      <input type="hidden" name="video_url" value={video || ""} />
       <input type="hidden" name="images" value={JSON.stringify(gallery)} />
       <input type="hidden" name="variants" value={JSON.stringify(variants)} />
       <input type="hidden" name="faqs" value={JSON.stringify(faqs)} />
@@ -184,6 +187,12 @@ export default function ProductForm({ product, categories }) {
           <div className={panelClass}>
             <h2 className="font-display text-lg font-semibold text-ink">Gallery Images</h2>
             <ColorImageMapper images={gallery} onChange={setGallery} variants={variants} folder="sakpack/products" />
+          </div>
+
+          <div className={panelClass}>
+            <h2 className="font-display text-lg font-semibold text-ink">Product Video</h2>
+            <p className="-mt-2 text-xs font-semibold text-ink/50">Optional — shows alongside the photo gallery on the product page.</p>
+            <VideoUploader value={video} onChange={setVideo} folder="sakpack/products" />
           </div>
         </div>
       </div>

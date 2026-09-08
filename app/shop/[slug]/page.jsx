@@ -162,7 +162,7 @@ export default async function ProductDetailPage({ params }) {
 
               {/* Gallery Panel — sticks in place while purchase details scroll on desktop */}
               <Reveal className="lg:sticky lg:top-[90px] lg:self-start">
-                <ProductGallery images={safeProduct.images} name={safeProduct.name} featuredImage={safeProduct.featured_image_url} />
+                <ProductGallery images={safeProduct.images} name={safeProduct.name} featuredImage={safeProduct.featured_image_url} videoUrl={safeProduct.video_url} />
               </Reveal>
 
               {/* Purchase Options */}

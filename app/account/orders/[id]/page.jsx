@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
 import HangerGlyph from "@/components/HangerGlyph";
 import { createClient } from "@/lib/supabase/server";
-import DelhiveryTracking from "./_components/DelhiveryTracking";
+import ShipmentTracking from "./_components/ShipmentTracking";
 
 export const metadata = { title: "Order Details" };
 
@@ -30,7 +30,7 @@ export default async function OrderDetailPage({ params }) {
   const { data: order } = await supabase
     .from("orders")
     .select(
-      "id, order_number, subtotal, shipping_cost, discount_amount, coupon_discount, quantity_discount, bundle_discount, coupon_code, total_amount, payment_method, payment_status, order_status, created_at, razorpay_payment_id, tracking_number, courier_name, shipment_status, tracking_url, order_items ( id, product_name, variant_name, color_hex, quantity, line_total, products ( featured_image_url ) ), addresses ( full_name, phone, address_line_1, address_line_2, city, state, postal_code )"
+      "id, order_number, subtotal, shipping_cost, discount_amount, coupon_discount, quantity_discount, bundle_discount, coupon_code, total_amount, payment_method, payment_status, order_status, created_at, razorpay_payment_id, tracking_number, courier_name, shipment_status, tracking_url, shiprocket_order_id, order_items ( id, product_name, variant_name, color_hex, quantity, line_total, products ( featured_image_url ) ), addresses ( full_name, phone, address_line_1, address_line_2, city, state, postal_code )"
     )
     .eq("id", id)
     .eq("user_id", user.id)
@@ -167,8 +167,8 @@ export default async function OrderDetailPage({ params }) {
             </Reveal>
 
             {/* Shipment Tracking */}
-            {order.tracking_number && (
-              <DelhiveryTracking
+            {(order.tracking_number || order.shiprocket_order_id) && (
+              <ShipmentTracking
                 orderId={order.id}
                 trackingNumber={order.tracking_number}
                 trackingUrl={order.tracking_url}

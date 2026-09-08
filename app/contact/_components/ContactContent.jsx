@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Phone, Copy, Check, ChevronDown, Clock, ArrowUpRight, Instagram, Facebook, Youtube, Sparkles, MapPin, Navigation, ShieldCheck, Truck, Headphones } from "lucide-react";
+import { Mail, Phone, Copy, Check, ChevronDown, Clock, ArrowUpRight, Instagram, Facebook, Youtube, Sparkles, MapPin, Navigation, ShieldCheck, Truck, Headphones, Building2 } from "lucide-react";
 import { BRAND, whatsappLink } from "@/lib/constants";
 import ContactForm from "./ContactForm";
 import Reveal from "@/components/Reveal";
@@ -119,12 +119,43 @@ export default function ContactContent() {
 
         {/* Right Column: Direct Channels & Information */}
         <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:col-span-5 lg:grid-cols-1">
-          {/* Email Card */}
+          {/* Business / Merchant Name Card (PayU / Gateway Compliance) */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            whileHover={{ y: -4 }}
+            className="h-full"
+          >
+            <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl sm:rounded-3xl border border-gold-400/40 bg-white/95 p-5 sm:p-7 shadow-xl backdrop-blur-md transition-all duration-500 hover:border-gold-500 hover:shadow-gold">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex min-w-0 items-start gap-3 sm:gap-4 sm:items-center">
+                  <span className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl sm:rounded-2xl bg-gold-400/20 text-gold-700 shadow-inner transition-transform duration-500 group-hover:scale-110">
+                    <Building2 className="h-5 w-5" />
+                  </span>
+                  <div className="min-w-0">
+                    <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gold-600">
+                      Business / Merchant Name
+                    </span>
+                    <p className="font-display mt-0.5 text-lg sm:text-2xl font-black text-ink">
+                      Sackpack India
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-4 sm:mt-5 flex items-center justify-between border-t border-gold-400/20 pt-3.5 sm:pt-4 text-xs sm:text-sm text-ink/80 font-medium">
+                <span>Operating Legal Brand &amp; Merchant Entity</span>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Email Card */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.05 }}
             whileHover={{ y: -6 }}
             className="h-full"
           >
@@ -175,7 +206,7 @@ export default function ContactContent() {
             className="h-full"
           >
             <a
-              href={whatsappLink("Hi Sakpack India, I would like to inquire about your products.")}
+              href={whatsappLink("Hi Sackpack India, I would like to inquire about your products.")}
               target="_blank"
               rel="noopener noreferrer"
               className="group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl sm:rounded-3xl border border-emerald-500/30 bg-emerald-50/80 p-5 sm:p-7 shadow-xl backdrop-blur-md transition-all duration-500 hover:border-emerald-500 hover:shadow-[0_0_30px_rgba(16,185,129,0.15)]"
@@ -298,7 +329,7 @@ export default function ContactContent() {
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Sakpack India Location Map"
+              title="Sackpack India Location Map"
               className="h-full w-full"
             />
           </div>
@@ -308,7 +339,7 @@ export default function ContactContent() {
             <div className="flex items-start justify-between gap-3">
               <div>
                 <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gold-600">
-                  Sakpack India Headquarters
+                  Sackpack India Headquarters
                 </span>
                 <h3 className="font-display text-base sm:text-lg font-bold text-ink mt-0.5">
                   Faridabad, Haryana
