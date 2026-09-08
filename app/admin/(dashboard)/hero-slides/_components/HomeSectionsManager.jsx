@@ -296,7 +296,7 @@ export default function HomeSectionsManager({ settings, only }) {
                   <ImageUploader
                     value={values[section.imageKey]}
                     onChange={(url) => handleChange(section.imageKey, url)}
-                    folder="amairah/home-sections"
+                    folder="sakpack/home-sections"
                   />
                 </div>
               )}
@@ -313,7 +313,7 @@ export default function HomeSectionsManager({ settings, only }) {
                         <ImageUploader
                           value={photo.image}
                           onChange={(url) => updatePhoto(section.photosKey, idx, "image", url)}
-                          folder="amairah/instagram"
+                          folder="sakpack/instagram"
                           previewClassName="h-20 w-20"
                         />
                         <div className="flex-1">

@@ -92,7 +92,7 @@ export default function BundleSettingsForm({ settings }) {
         <ImageUploader
           value={bannerImageUrl}
           onChange={setBannerImageUrl}
-          folder="amairah/bundle"
+          folder="sakpack/bundle"
           previewClassName="aspect-video w-full max-w-md"
         />
       </div>

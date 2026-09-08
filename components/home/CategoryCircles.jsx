@@ -79,11 +79,13 @@ export default function CategoryCircles({ categories, heading = "Shop By Categor
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [hasOverflow, setHasOverflow] = useState(false);
 
   const updateScrollState = useCallback(() => {
     const el = trackRef.current;
     if (!el) return;
     const maxScroll = el.scrollWidth - el.clientWidth;
+    setHasOverflow(maxScroll > 4);
     setCanScrollLeft(el.scrollLeft > 6);
     setCanScrollRight(el.scrollLeft < maxScroll - 6);
     if (maxScroll > 0) {
@@ -127,7 +129,11 @@ export default function CategoryCircles({ categories, heading = "Shop By Categor
         <div className="relative">
           <div
             ref={trackRef}
-            className="flex flex-nowrap items-start gap-4 sm:gap-8 lg:gap-12 overflow-x-auto scroll-smooth py-4 px-2 touch-pan-x snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className={`flex flex-nowrap items-start gap-4 sm:gap-8 lg:gap-12 overflow-x-auto scroll-smooth py-4 px-2 touch-pan-x snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
+              hasOverflow
+                ? "[mask-image:linear-gradient(to_right,transparent,black_24px,black_calc(100%-24px),transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_24px,black_calc(100%-24px),transparent)]"
+                : "justify-center"
+            }`}
           >
             {categories.map((cat, i) => (
               <div key={cat.id} className="snap-start shrink-0">
@@ -136,34 +142,36 @@ export default function CategoryCircles({ categories, heading = "Shop By Categor
             ))}
           </div>
 
-          {/* Bottom Control Bar: Left Arrow, Progress Bar, Right Arrow */}
-          <div className="mt-6 flex items-center justify-center gap-4">
-            <button
-              onClick={() => scrollByAmount(-1)}
-              disabled={!canScrollLeft}
-              aria-label="Scroll categories left"
-              className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-gold-400/40 bg-white text-ink shadow-sm backdrop-blur-md transition-all duration-300 disabled:opacity-30 hover:border-gold-500 hover:bg-gold-400/10 active:scale-95"
-            >
-              <ChevronLeft className="h-5 w-5 text-ink" />
-            </button>
+          {/* Bottom Control Bar: Left Arrow, Progress Bar, Right Arrow — only when there's actually something to scroll */}
+          {hasOverflow && (
+            <div className="mt-6 flex items-center justify-center gap-4">
+              <button
+                onClick={() => scrollByAmount(-1)}
+                disabled={!canScrollLeft}
+                aria-label="Scroll categories left"
+                className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-gold-400/40 bg-white text-ink shadow-sm backdrop-blur-md transition-all duration-300 disabled:opacity-30 hover:border-gold-500 hover:bg-gold-400/10 active:scale-95"
+              >
+                <ChevronLeft className="h-5 w-5 text-ink" />
+              </button>
 
-            {/* Visual Scroll Progress Bar */}
-            <div className="relative h-1.5 w-24 sm:w-36 overflow-hidden rounded-full bg-gold-400/20">
-              <div
-                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-gold-400 to-gold-600 transition-all duration-150"
-                style={{ width: `${Math.max(20, scrollProgress * 100)}%` }}
-              />
+              {/* Visual Scroll Progress Bar */}
+              <div className="relative h-1.5 w-24 sm:w-36 overflow-hidden rounded-full bg-gold-400/20">
+                <div
+                  className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-gold-400 to-gold-600 transition-all duration-150"
+                  style={{ width: `${Math.max(20, scrollProgress * 100)}%` }}
+                />
+              </div>
+
+              <button
+                onClick={() => scrollByAmount(1)}
+                disabled={!canScrollRight}
+                aria-label="Scroll categories right"
+                className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-gold-400/40 bg-white text-ink shadow-sm backdrop-blur-md transition-all duration-300 disabled:opacity-30 hover:border-gold-500 hover:bg-gold-400/10 active:scale-95"
+              >
+                <ChevronRight className="h-5 w-5 text-ink" />
+              </button>
             </div>
-
-            <button
-              onClick={() => scrollByAmount(1)}
-              disabled={!canScrollRight}
-              aria-label="Scroll categories right"
-              className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-gold-400/40 bg-white text-ink shadow-sm backdrop-blur-md transition-all duration-300 disabled:opacity-30 hover:border-gold-500 hover:bg-gold-400/10 active:scale-95"
-            >
-              <ChevronRight className="h-5 w-5 text-ink" />
-            </button>
-          </div>
+          )}
         </div>
       </div>
     </section>

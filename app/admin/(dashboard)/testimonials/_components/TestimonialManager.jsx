@@ -58,7 +58,7 @@ function TestimonialEditForm({ testimonial, onCancel, onSaved }) {
 
   return (
     <form onSubmit={handleSave} className="w-full space-y-3 rounded-2xl border border-gold-400/30 bg-ink/[0.05] p-4">
-      <ImageUploader value={imageUrl} onChange={setImageUrl} folder="amairah/testimonials" />
+      <ImageUploader value={imageUrl} onChange={setImageUrl} folder="sakpack/testimonials" />
       <input placeholder="Customer Name" value={form.customer_name} onChange={update("customer_name")} className={inputClass} required />
       <input placeholder="Location (e.g. Delhi)" value={form.location} onChange={update("location")} className={inputClass} />
       <textarea placeholder="Review text" value={form.review_text} onChange={update("review_text")} rows={4} className={inputClass} required />
@@ -188,7 +188,7 @@ export default function TestimonialManager({ testimonials }) {
           </div>
           <h2 className="font-display text-lg font-semibold text-ink">Add Testimonial</h2>
         </div>
-        <ImageUploader value={imageUrl} onChange={setImageUrl} folder="amairah/testimonials" />
+        <ImageUploader value={imageUrl} onChange={setImageUrl} folder="sakpack/testimonials" />
         <input placeholder="Customer Name" value={form.customer_name} onChange={update("customer_name")} className={inputClass} required />
         <input placeholder="Location (e.g. Delhi)" value={form.location} onChange={update("location")} className={inputClass} />
         <textarea placeholder="Review text" value={form.review_text} onChange={update("review_text")} rows={4} className={inputClass} required />

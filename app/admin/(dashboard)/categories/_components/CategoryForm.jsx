@@ -44,7 +44,7 @@ export default function CategoryForm({ category }) {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-[200px_1fr]">
         <div>
           <label className={labelClass}>Image</label>
-          <ImageUploader value={imageUrl} onChange={setImageUrl} folder="amairah/categories" />
+          <ImageUploader value={imageUrl} onChange={setImageUrl} folder="sakpack/categories" />
         </div>
 
         <div className="space-y-5">

@@ -17,7 +17,7 @@ function ProductFields({ defaults, images, setImages }) {
     <div className="space-y-3">
       <div>
         <label className={labelClass}>Photos (click the star to set the cover image)</label>
-        <ImageUploader value={images} onChange={setImages} multiple showCoverPicker folder="amairah/bundle-items" />
+        <ImageUploader value={images} onChange={setImages} multiple showCoverPicker folder="sakpack/bundle-items" />
       </div>
 
       <div className="grid grid-cols-2 gap-2.5">

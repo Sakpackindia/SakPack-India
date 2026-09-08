@@ -17,7 +17,7 @@ export default function ImageUploader({
   value,
   onChange,
   multiple = false,
-  folder = "amairah",
+  folder = "sakpack",
   previewClassName = "h-24 w-24",
   showCoverPicker = false,
 }) {
@@ -105,7 +105,16 @@ export default function ImageUploader({
         {(multiple || urls.length === 0) && (
           <CldUploadWidget
             signatureEndpoint="/api/cloudinary/sign"
-            options={{ folder, multiple, sources: ["local", "url", "camera"] }}
+            options={{
+              folder,
+              multiple,
+              sources: ["local", "url", "camera"],
+              // Cloudinary resizes/compresses the file once, at upload time,
+              // before storing it — caps storage/bandwidth without touching
+              // how images are delivered (next/image's optimizer still
+              // handles per-device sizing and format negotiation as before).
+              transformation: "w_2000,h_2000,c_limit,q_auto",
+            }}
             onSuccess={handleSuccess}
             onClose={restoreBodyScroll}
           >
