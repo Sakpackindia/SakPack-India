@@ -85,8 +85,14 @@ export async function POST(request) {
   if (shiprocketOrderId) query = query.eq("shiprocket_order_id", shiprocketOrderId);
   else query = query.eq("shiprocket_shipment_id", shiprocketShipmentId);
 
+  // Shiprocket's own "Test Webhook" button sends a sample payload with a
+  // fake order_id that will never match a real order — responding with an
+  // error status here (as opposed to a plain "no-op") is what made their
+  // dashboard report the test as failed. Real webhooks for orders we don't
+  // recognize (deleted, wrong store, etc.) should be silently accepted too —
+  // Shiprocket has nothing useful to do with a failure response either way.
   const { data: order } = await query.maybeSingle();
-  if (!order) return Response.json({ success: false, error: "Matching order not found." }, { status: 404, headers: corsHeaders });
+  if (!order) return Response.json({ success: true, message: "No matching order; ignored." }, { headers: corsHeaders });
 
   const currentStatus = payload.current_status || payload.shipment_status || payload.status || null;
   const courierName = payload.courier_name || null;
