@@ -18,13 +18,9 @@ export default function ShipmentTracking({ orderId, trackingNumber, trackingUrl,
   const activeTrackingNumber = live?.tracking_number ?? trackingNumber;
   const activeTrackingUrl = live?.tracking_url ?? trackingUrl;
   const activeOrderStatus = live?.order_status;
-  const isShiprocket = (activeCourier || "").toLowerCase().includes("shiprocket");
-  const endpoint = isShiprocket ? "/api/shiprocket" : "/api/delhivery";
-  const fallbackUrl = activeTrackingNumber
-    ? isShiprocket
-      ? `https://shiprocket.co/tracking/${activeTrackingNumber}`
-      : `https://www.delhivery.com/track/package/${activeTrackingNumber}`
-    : null;
+  const isShiprocket = (activeCourier || "").toLowerCase().includes("shiprocket") || !activeCourier;
+  const endpoint = "/api/shiprocket";
+  const fallbackUrl = activeTrackingNumber ? `https://shiprocket.co/tracking/${activeTrackingNumber}` : null;
 
   useEffect(() => {
     let cancelled = false;
@@ -95,7 +91,7 @@ export default function ShipmentTracking({ orderId, trackingNumber, trackingUrl,
       </div>
       <div className="flex flex-wrap items-center gap-3 text-lg mb-4">
         <span className="text-ink/50">Courier:</span>
-        <span className="text-ink font-medium">{activeCourier || "Delhivery"}</span>
+        <span className="text-ink font-medium">{activeCourier || "Shiprocket"}</span>
         {activeTrackingNumber && (
           <>
             <span className="text-ink/20">|</span>
@@ -112,7 +108,7 @@ export default function ShipmentTracking({ orderId, trackingNumber, trackingUrl,
           rel="noopener noreferrer"
           className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-gold-400/30 bg-gold-400/5 px-4 py-2 text-base font-semibold uppercase tracking-wide text-gold-700 transition-all duration-300 hover:border-gold-400/60 hover:bg-gold-400/10"
         >
-          <ExternalLink className="h-3.5 w-3.5" /> Track on {isShiprocket ? "Shiprocket" : "Delhivery"}
+          <ExternalLink className="h-3.5 w-3.5" /> Track on Shiprocket
         </a>
       )}
 

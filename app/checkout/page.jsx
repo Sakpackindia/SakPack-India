@@ -2,7 +2,7 @@ import SiteHeader from "@/components/SiteHeader";
 import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
 import CheckoutForm from "./_components/CheckoutForm";
-import { isRazorpayEnabled } from "@/actions/checkout";
+import { isPayuEnabled } from "@/actions/checkout";
 import { getShippingSettings } from "@/actions/admin/shipping";
 import { getQuantityDiscountSettings } from "@/actions/admin/quantityDiscount";
 import { getBundleSettings } from "@/actions/bundle";
@@ -12,8 +12,8 @@ import { ShieldCheck } from "lucide-react";
 export const metadata = { title: "Checkout" };
 
 export default async function CheckoutPage() {
-  const [razorpayConfigured, shipping, quantityDiscount, bundleSettings, codEnabled, onlinePaymentEnabled] = await Promise.all([
-    isRazorpayEnabled(),
+  const [payuConfigured, shipping, quantityDiscount, bundleSettings, codEnabled, onlinePaymentEnabled] = await Promise.all([
+    isPayuEnabled(),
     getShippingSettings(),
     getQuantityDiscountSettings(),
     getBundleSettings(),
@@ -33,7 +33,7 @@ export default async function CheckoutPage() {
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <CheckoutForm
             codEnabled={codEnabled}
-            razorpayEnabled={razorpayConfigured && onlinePaymentEnabled}
+            payuEnabled={payuConfigured && onlinePaymentEnabled}
             shipping={shipping}
             quantityDiscount={quantityDiscount}
             bundleSettings={bundleSettings}

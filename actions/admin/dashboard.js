@@ -3,13 +3,13 @@
 import { unstable_cache } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-// A Razorpay order only counts as a real sale once the webhook (or the
-// post-payment verify call) has flipped it to "paid" — until then the
-// customer may still be in the checkout modal, or may have abandoned it.
-// COD has no online-payment step, so it's always real the moment it's placed.
+// A PayU order only counts as a real sale once the payment callback has
+// flipped it to "paid" — until then the customer may still be on PayU's
+// hosted payment page, or may have abandoned it. COD has no online-payment
+// step, so it's always real the moment it's placed.
 // (Kept as a local literal — this is duplicated from admin/orders.js since a
 // "use server" file may only export async functions.)
-const VISIBLE_ORDERS_FILTER = "payment_method.neq.RAZORPAY,payment_status.eq.paid";
+const VISIBLE_ORDERS_FILTER = "payment_method.neq.PAYU,payment_status.eq.paid";
 
 const getDashboardStatsCached = unstable_cache(
   async () => {

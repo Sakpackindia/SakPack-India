@@ -16,7 +16,7 @@ const DEFAULT_SETTINGS = {
   facebook_url: { value: "https://www.facebook.com/people/Sakpack-India/61594175631081/", category: "social", description: "Facebook profile URL" },
   youtube_url: { value: "https://youtube.com/@sakpackindia", category: "social", description: "YouTube channel URL" },
   cod_enabled: { value: "true", category: "payment", description: "Allow Cash on Delivery at checkout" },
-  online_payment_enabled: { value: "true", category: "payment", description: "Allow online payment (Razorpay) at checkout" },
+  online_payment_enabled: { value: "true", category: "payment", description: "Allow online payment (PayU) at checkout" },
 
   home_hero_badge_text: { value: "LOVED BY 10,000+ WOMEN", category: "home_hero", description: "Hero — badge text above the title" },
   home_hero_button_text: { value: "Shop Now", category: "home_hero", description: "Hero — button text" },

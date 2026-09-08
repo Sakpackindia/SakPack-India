@@ -26,7 +26,7 @@ export default function PincodeChecker() {
     const timeoutId = setTimeout(() => controller.abort(), 8000);
 
     try {
-      const res = await fetch("/api/delhivery", {
+      const res = await fetch("/api/shiprocket", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -58,7 +58,7 @@ export default function PincodeChecker() {
       clearTimeout(timeoutId);
       setStatus("error");
       if (err.name === "AbortError") {
-        setInfo({ message: "Request timed out. Delhivery API is not responding. Please try again." });
+        setInfo({ message: "Request timed out. The courier API is not responding. Please try again." });
       } else {
         setInfo({ message: "Unable to check pincode. Pincode check failed or API not configured." });
       }
@@ -111,7 +111,7 @@ export default function PincodeChecker() {
           <div>
             <p className="font-semibold text-red-600">Not Serviceable</p>
             <p className="mt-0.5 text-ink/60">
-              Sorry, we currently do not deliver to this pincode via Delhivery.
+              Sorry, we currently do not deliver to this pincode.
             </p>
           </div>
         </div>

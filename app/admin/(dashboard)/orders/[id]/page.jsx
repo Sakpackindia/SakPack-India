@@ -156,12 +156,12 @@ export default async function AdminOrderDetailPage({ params }) {
           </div>
           <OrderStatusManager order={order} />
           <p className="mt-5 text-base sm:text-lg font-semibold text-ink/70">
-            Payment method: <span className="text-ink font-bold">{order.payment_method === "COD" ? "Cash on Delivery" : "Online (Razorpay)"}</span>
+            Payment method: <span className="text-ink font-bold">{order.payment_method === "COD" ? "Cash on Delivery" : "Online (PayU)"}</span>
           </p>
-          {order.payment_method === "RAZORPAY" && order.razorpay_payment_id && (
+          {order.payment_method === "PAYU" && order.payu_payment_id && (
             <div className="mt-4 border-t border-gold-400/20 pt-4 text-sm sm:text-base font-semibold">
-              <span className="block text-ink/50 uppercase tracking-wider font-extrabold">Razorpay Payment ID</span>
-              <span className="font-mono text-ink font-bold select-all">{order.razorpay_payment_id}</span>
+              <span className="block text-ink/50 uppercase tracking-wider font-extrabold">PayU Payment ID</span>
+              <span className="font-mono text-ink font-bold select-all">{order.payu_payment_id}</span>
             </div>
           )}
           <ShipmentManager order={order} />

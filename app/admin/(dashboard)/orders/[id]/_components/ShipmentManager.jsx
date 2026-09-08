@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import { Truck, RefreshCw, PackageCheck, ExternalLink, X } from "lucide-react";
+import { Truck, RefreshCw, PackageCheck, ExternalLink, X, RadioTower } from "lucide-react";
+
+const POLL_INTERVAL_MS = 15000;
 
 const inputClass =
   "w-full rounded-xl border border-gold-400/20 bg-ivory-deep/60 px-4 py-3 text-base sm:text-lg font-bold text-ink transition-colors duration-300 focus:border-gold-400/40 focus:outline-none focus:ring-2 focus:ring-gold-400/20 hover:border-gold-400/30";
 const labelClass = "mb-1.5 block text-xs sm:text-sm font-extrabold uppercase tracking-wider text-ink/60";
 
 const COURIERS = {
-  delhivery: { label: "Delhivery", endpoint: "/api/delhivery", trackFallback: (n) => `https://www.delhivery.com/track/package/${n}` },
   shiprocket: { label: "Shiprocket", endpoint: "/api/shiprocket", trackFallback: (n) => `https://shiprocket.co/tracking/${n}` },
 };
 
@@ -129,10 +130,38 @@ export default function ShipmentManager({ order }) {
   const [busy, setBusy] = useState(null);
   const [error, setError] = useState(null);
   const [tracking, setTracking] = useState(null);
+  // Kept fresh by polling the DB, which the Shiprocket webhook writes to as
+  // status updates arrive — mirrors the customer-facing ShipmentTracking
+  // component so admin sees the same live status without manually refreshing.
+  const [live, setLive] = useState(null);
 
   const isBooked = Boolean(order.tracking_number || order.shiprocket_order_id);
-  const activeCourierKey = (order.courier_name || "").toLowerCase().includes("shiprocket") ? "shiprocket" : "delhivery";
-  const activeCourier = COURIERS[activeCourierKey];
+  const activeCourier = COURIERS.shiprocket;
+
+  const activeCourierName = live?.courier_name ?? order.courier_name;
+  const activeTrackingNumber = live?.tracking_number ?? order.tracking_number;
+  const activeTrackingUrl = live?.tracking_url ?? order.tracking_url;
+  const activeShipmentStatus = live?.shipment_status ?? order.shipment_status;
+  const activeOrderStatus = live?.order_status ?? order.order_status;
+  const isFinal = activeOrderStatus === "delivered" || activeOrderStatus === "cancelled";
+
+  useEffect(() => {
+    if (!isBooked || isFinal) return;
+    let cancelled = false;
+    const poll = async () => {
+      try {
+        const result = await postJson(activeCourier.endpoint, { action: "get_status", payload: { orderId: order.id } });
+        if (!cancelled && result.success) setLive(result.order);
+      } catch {
+        // Silent — next tick tries again.
+      }
+    };
+    const id = setInterval(poll, POLL_INTERVAL_MS);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, [order.id, isBooked, isFinal, activeCourier.endpoint]);
 
   const handleTrackNow = async () => {
     setBusy("track");
@@ -153,26 +182,31 @@ export default function ShipmentManager({ order }) {
         <div className="flex items-center gap-2">
           <PackageCheck className="h-4 w-4 text-gold-600" />
           <h3 className="text-base font-semibold uppercase tracking-wide text-ink/40">Shipment</h3>
+          {!isFinal && (
+            <span className="ml-auto inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600">
+              <RadioTower className="h-3.5 w-3.5 animate-pulse" /> Live
+            </span>
+          )}
         </div>
         <div className="text-base text-ink/70">
-          <span className="text-ink/40">Courier:</span> {order.courier_name || activeCourier.label}
+          <span className="text-ink/40">Courier:</span> {activeCourierName || activeCourier.label}
         </div>
         <div className="text-base">
           <span className="text-ink/40">Waybill:</span>{" "}
-          <span className="font-mono text-ink select-all">{order.tracking_number || "Awaiting AWB assignment"}</span>
+          <span className="font-mono text-ink select-all">{activeTrackingNumber || "Awaiting AWB assignment"}</span>
         </div>
-        {order.shipment_status && (
+        {activeShipmentStatus && (
           <div className="text-base text-ink/70">
-            <span className="text-ink/40">Last Status:</span> {order.shipment_status}
+            <span className="text-ink/40">Last Status:</span> {activeShipmentStatus}
           </div>
         )}
 
         {error && <p className="text-base text-red-400">{error}</p>}
 
         <div className="grid grid-cols-2 gap-2 pt-1">
-          {order.tracking_number && (
+          {activeTrackingNumber && (
             <a
-              href={order.tracking_url || activeCourier.trackFallback(order.tracking_number)}
+              href={activeTrackingUrl || activeCourier.trackFallback(activeTrackingNumber)}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-gold-400/25 bg-gold-400/5 px-3 py-2 text-center text-base font-semibold text-gold-700 hover:border-gold-300/40 hover:bg-gold-400/10"
@@ -184,7 +218,7 @@ export default function ShipmentManager({ order }) {
             type="button"
             onClick={handleTrackNow}
             disabled={busy === "track"}
-            className={`inline-flex items-center justify-center gap-1.5 rounded-xl border border-gold-400/25 bg-gold-400/5 px-3 py-2 text-center text-base font-semibold text-gold-700 hover:border-gold-300/40 hover:bg-gold-400/10 disabled:opacity-50 ${!order.tracking_number ? "col-span-2" : ""}`}
+            className={`inline-flex items-center justify-center gap-1.5 rounded-xl border border-gold-400/25 bg-gold-400/5 px-3 py-2 text-center text-base font-semibold text-gold-700 hover:border-gold-300/40 hover:bg-gold-400/10 disabled:opacity-50 ${!activeTrackingNumber ? "col-span-2" : ""}`}
           >
             <RefreshCw className={`h-3.5 w-3.5 shrink-0 ${busy === "track" ? "animate-spin" : ""}`} /> {busy === "track" ? "Checking…" : "Refresh"}
           </button>
@@ -228,22 +262,13 @@ export default function ShipmentManager({ order }) {
         <Truck className="h-4 w-4 text-gold-600" />
         <h3 className="text-base font-semibold uppercase tracking-wide text-ink/40">Shipment</h3>
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <button
-          type="button"
-          onClick={() => setModalCourier("delhivery")}
-          className="btn-gold px-4 py-2.5 text-sm sm:text-base font-semibold uppercase tracking-wide"
-        >
-          Ship via Delhivery
-        </button>
-        <button
-          type="button"
-          onClick={() => setModalCourier("shiprocket")}
-          className="btn-gold px-4 py-2.5 text-sm sm:text-base font-semibold uppercase tracking-wide"
-        >
-          Ship via Shiprocket
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={() => setModalCourier("shiprocket")}
+        className="btn-gold w-full px-4 py-2.5 text-sm sm:text-base font-semibold uppercase tracking-wide"
+      >
+        Ship via Shiprocket
+      </button>
 
       {modalCourier && (
         <CreateShipmentModal

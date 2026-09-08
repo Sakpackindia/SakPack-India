@@ -5,7 +5,7 @@ import { ShieldCheck, Lock, Database, EyeOff, UserCheck } from "lucide-react";
 export const metadata = { title: "Privacy Policy" };
 
 const HIGHLIGHTS = [
-  { title: "256-Bit SSL Encryption", desc: "Payments processed via Razorpay" },
+  { title: "256-Bit SSL Encryption", desc: "Payments processed via PayU" },
   { title: "Zero Card Storage", desc: "We never store raw financial details" },
   { title: "No Data Selling", desc: "Your personal info is never sold" },
 ];
@@ -32,7 +32,7 @@ export default function PrivacyPolicyPage() {
           <Lock className="h-6 w-6 shrink-0 text-gold-600 mt-0.5" />
           <div>
             <strong className="text-gold-700 uppercase tracking-wider font-extrabold block mb-1 text-base sm:text-base">Encrypted Payment Guarantee</strong>
-            We do NOT store your bank account numbers, credit/debit card numbers, CVVs, or UPI PINs. All financial transactions are encrypted and processed through RBI-certified payment gateways (Razorpay).
+            We do NOT store your bank account numbers, credit/debit card numbers, CVVs, or UPI PINs. All financial transactions are encrypted and processed through RBI-certified payment gateways (PayU).
           </div>
         </div>
       </div>

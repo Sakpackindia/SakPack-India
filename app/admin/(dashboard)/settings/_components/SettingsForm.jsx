@@ -19,7 +19,7 @@ const CATEGORIES = {
 
 const TOGGLE_LABELS = {
   cod_enabled: "Cash on Delivery",
-  online_payment_enabled: "Online Payment (Razorpay)",
+  online_payment_enabled: "Online Payment (PayU)",
 };
 
 export default function SettingsForm({ initialSettings }) {

@@ -30,7 +30,7 @@ export default async function OrderDetailPage({ params }) {
   const { data: order } = await supabase
     .from("orders")
     .select(
-      "id, order_number, subtotal, shipping_cost, discount_amount, coupon_discount, quantity_discount, bundle_discount, coupon_code, total_amount, payment_method, payment_status, order_status, created_at, razorpay_payment_id, tracking_number, courier_name, shipment_status, tracking_url, shiprocket_order_id, order_items ( id, product_name, variant_name, color_hex, quantity, line_total, products ( featured_image_url ) ), addresses ( full_name, phone, address_line_1, address_line_2, city, state, postal_code )"
+      "id, order_number, subtotal, shipping_cost, discount_amount, coupon_discount, quantity_discount, bundle_discount, coupon_code, total_amount, payment_method, payment_status, order_status, created_at, payu_payment_id, tracking_number, courier_name, shipment_status, tracking_url, shiprocket_order_id, order_items ( id, product_name, variant_name, color_hex, quantity, line_total, products ( featured_image_url ) ), addresses ( full_name, phone, address_line_1, address_line_2, city, state, postal_code )"
     )
     .eq("id", id)
     .eq("user_id", user.id)
@@ -210,7 +210,7 @@ export default async function OrderDetailPage({ params }) {
               <div className="flex flex-wrap items-center gap-3 text-base sm:text-lg font-semibold">
                 <span className="text-ink/60 font-bold">Method:</span>
                 <span className="text-ink font-bold">
-                  {order.payment_method === "COD" ? "Cash on Delivery" : "Online (Razorpay)"}
+                  {order.payment_method === "COD" ? "Cash on Delivery" : "Online (PayU)"}
                 </span>
                 <span className="text-ink/20 hidden sm:inline">|</span>
                 <span className="text-ink/60 font-bold">Status:</span>
@@ -226,10 +226,10 @@ export default async function OrderDetailPage({ params }) {
                   {order.payment_status}
                 </span>
               </div>
-              {order.payment_method === "RAZORPAY" && order.razorpay_payment_id && (
+              {order.payment_method === "PAYU" && order.payu_payment_id && (
                 <div className="mt-4 border-t border-ink/10 pt-4">
                   <span className="block text-xs sm:text-sm font-extrabold uppercase tracking-wider text-ink/50">Payment ID</span>
-                  <span className="font-mono text-sm sm:text-base text-ink/80 select-all font-semibold">{order.razorpay_payment_id}</span>
+                  <span className="font-mono text-sm sm:text-base text-ink/80 select-all font-semibold">{order.payu_payment_id}</span>
                 </div>
               )}
             </Reveal>

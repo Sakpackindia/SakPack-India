@@ -5,19 +5,24 @@ import { SHIPPING_DEFAULTS, calculateQuantityDiscount, calculateBundleDiscount, 
 import { isCodEnabled, isOnlinePaymentEnabled } from "@/actions/settings";
 import { getQuantityDiscountSettings } from "@/actions/admin/quantityDiscount";
 import { getBundleSettings } from "@/actions/bundle";
-import crypto from "crypto";
+import { isPayuEnabled as isPayuConfigured, getPayuActionUrl, generatePayuHash } from "@/lib/payu";
+import { sendBrevoEmail, orderConfirmationEmailHtml } from "@/lib/brevo";
 
-function getRazorpayInstance() {
-  const keyId = process.env.RAZORPAY_KEY_ID;
-  const keySecret = process.env.RAZORPAY_KEY_SECRET;
-  if (!keyId || !keySecret) return null;
-
-  const Razorpay = require("razorpay");
-  return new Razorpay({ key_id: keyId, key_secret: keySecret });
+async function sendOrderConfirmationEmail({ email, customerName, orderNumber, items, totalAmount }) {
+  if (!email) return;
+  try {
+    await sendBrevoEmail({
+      to: email,
+      subject: `Order Confirmed — ${orderNumber}`,
+      html: orderConfirmationEmailHtml({ orderNumber, customerName, items, totalAmount }),
+    });
+  } catch (e) {
+    console.error("Order confirmation email failed:", e);
+  }
 }
 
-export async function isRazorpayEnabled() {
-  return Boolean(process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET);
+export async function isPayuEnabled() {
+  return isPayuConfigured();
 }
 
 async function resolveCoupon(supabase, code, subtotal) {
@@ -70,7 +75,7 @@ export async function processCheckout(addressInput, items, paymentMethod, coupon
   if (paymentMethod === "COD" && !(await isCodEnabled())) {
     return { success: false, error: "Cash on Delivery is currently unavailable. Please pay online instead." };
   }
-  if (paymentMethod === "RAZORPAY" && !(await isOnlinePaymentEnabled())) {
+  if (paymentMethod === "PAYU" && !(await isOnlinePaymentEnabled())) {
     return { success: false, error: "Online payment is currently unavailable. Please choose Cash on Delivery." };
   }
 
@@ -185,79 +190,69 @@ export async function processCheckout(addressInput, items, paymentMethod, coupon
     return { success: false, error: "Failed to save order items." };
   }
 
-  if (paymentMethod === "RAZORPAY") {
-    const razorpay = getRazorpayInstance();
-    if (!razorpay) {
+  if (paymentMethod === "PAYU") {
+    if (!isPayuConfigured()) {
       return { success: false, error: "Online payments are not configured yet. Please choose Cash on Delivery." };
     }
     try {
-      const rzpOrder = await razorpay.orders.create({
-        amount: Math.round(totalAmount * 100),
-        currency: "INR",
-        receipt: order.id,
-      });
+      const key = process.env.PAYU_MERCHANT_KEY;
+      const salt = process.env.PAYU_MERCHANT_SALT;
+      const txnid = order.order_number.replace(/-/g, "");
+      const amount = totalAmount.toFixed(2);
+      const productinfo = "Sakpack Order";
+      const firstname = addressInput.fullName.trim();
+      const email = user.email || "guest@sakpack.com";
+      const phone = addressInput.phone;
+      const callbackUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/payu/callback`;
+
+      const hash = generatePayuHash({ key, txnid, amount, productinfo, firstname, email }, salt);
+
       // orders has no UPDATE RLS policy for the customer session (only
       // SELECT/INSERT of their own rows) — same class of bug as the stock
       // decrement below, same fix: route it through the service-role client.
       const { createAdminClient: createAdminClientForOrder } = await import("@/lib/supabase/admin");
-      await createAdminClientForOrder().from("orders").update({ razorpay_order_id: rzpOrder.id }).eq("id", order.id);
+      await createAdminClientForOrder().from("orders").update({ payu_txnid: txnid }).eq("id", order.id);
 
       return {
         success: true,
-        isRazorpay: true,
-        razorpayOrderId: rzpOrder.id,
-        razorpayKeyId: process.env.RAZORPAY_KEY_ID,
+        isPayu: true,
+        payuActionUrl: getPayuActionUrl(),
+        payuFields: {
+          key,
+          txnid,
+          amount,
+          productinfo,
+          firstname,
+          email,
+          phone,
+          surl: callbackUrl,
+          furl: callbackUrl,
+          hash,
+        },
         orderId: order.id,
         orderNumber: order.order_number,
-        amount: rzpOrder.amount,
       };
     } catch (e) {
-      const reason = e?.error?.description || e?.message || "Unknown error";
-      console.error("Razorpay order creation failed:", e?.error || e);
-      return { success: false, error: `Failed to start online payment: ${reason}` };
+      console.error("PayU order creation failed:", e);
+      return { success: false, error: "Failed to start online payment. Please try again." };
     }
   }
 
   // product_variants only has a public read RLS policy — no update policy
   // for the customer's own session — so this must run with the service-role
-  // client, same as the Razorpay path below already does.
+  // client, same as the PayU path above already does.
   const { createAdminClient } = await import("@/lib/supabase/admin");
   await decrementStock(createAdminClient(), items);
 
-  return { success: true, isRazorpay: false, orderId: order.id, orderNumber: order.order_number };
-}
+  await sendOrderConfirmationEmail({
+    email: user.email,
+    customerName: addressInput.fullName.trim(),
+    orderNumber: order.order_number,
+    items: items.map((item) => ({ name: item.name, quantity: item.quantity, lineTotal: item.price * item.quantity })),
+    totalAmount,
+  });
 
-export async function verifyRazorpayPayment(razorpayPaymentId, razorpayOrderId, razorpaySignature, internalOrderId, items) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return { success: false, error: "Unauthorized" };
-
-  const secret = process.env.RAZORPAY_KEY_SECRET;
-  if (!secret) return { success: false, error: "Razorpay is not configured." };
-
-  const expectedSignature = crypto
-    .createHmac("sha256", secret)
-    .update(`${razorpayOrderId}|${razorpayPaymentId}`)
-    .digest("hex");
-
-  if (expectedSignature !== razorpaySignature) {
-    return { success: false, error: "Payment verification failed." };
-  }
-
-  const { createAdminClient } = await import("@/lib/supabase/admin");
-  const admin = createAdminClient();
-
-  await admin
-    .from("orders")
-    .update({ payment_status: "paid", razorpay_payment_id: razorpayPaymentId })
-    .eq("id", internalOrderId)
-    .eq("user_id", user.id);
-
-  await decrementStock(admin, items || []);
-
-  return { success: true, razorpayPaymentId };
+  return { success: true, isPayu: false, orderId: order.id, orderNumber: order.order_number };
 }
 
 async function decrementStock(client, items) {

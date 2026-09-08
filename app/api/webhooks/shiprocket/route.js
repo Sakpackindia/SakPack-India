@@ -4,7 +4,9 @@ import { createAdminClient } from "@/lib/supabase/admin";
 // the order-detail pages can reflect live status without anyone manually
 // clicking "Refresh". Register this URL (https://<domain>/api/webhooks/shiprocket)
 // in the Shiprocket dashboard's webhook settings, with SHIPROCKET_WEBHOOK_SECRET
-// set as the "Secret Key" / custom header value they send back as x-api-key.
+// pasted as the token — Shiprocket's "Auth Token Type" dropdown there picks
+// which header it arrives in (we accept either "Authorization" or
+// "x-api-key" so either dropdown choice works without a code change).
 
 export async function GET() {
   return Response.json({ status: "active" });
@@ -45,7 +47,8 @@ export async function POST(request) {
 
   if (!isTestPing) {
     const expectedKey = process.env.SHIPROCKET_WEBHOOK_SECRET;
-    const providedKey = request.headers.get("x-api-key");
+    const authHeader = request.headers.get("authorization") || "";
+    const providedKey = request.headers.get("x-api-key") || authHeader.replace(/^Bearer\s+/i, "");
     if (!expectedKey || providedKey !== expectedKey) {
       return Response.json({ success: false, error: "Invalid or missing webhook secret." }, { status: 401 });
     }

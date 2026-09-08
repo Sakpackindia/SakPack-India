@@ -277,12 +277,12 @@ export default function AccountTabs({ profile, orders }) {
                       </span>
                       <div className="min-w-0 flex-1">
                         <p className="text-xs sm:text-sm font-extrabold uppercase tracking-[0.18em] text-gold-700">
-                          {order.courier_name || "Delhivery"} · {order.order_status === "delivered" ? "Delivered" : "On the way"}
+                          {order.courier_name || "Shiprocket"} · {order.order_status === "delivered" ? "Delivered" : "On the way"}
                         </p>
                         <p className="truncate font-mono text-sm sm:text-base text-ink font-bold">{order.tracking_number}</p>
                       </div>
                       <a
-                        href={order.tracking_url || `https://www.delhivery.com/track/package/${order.tracking_number}`}
+                        href={order.tracking_url || `https://shiprocket.co/tracking/${order.tracking_number}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
