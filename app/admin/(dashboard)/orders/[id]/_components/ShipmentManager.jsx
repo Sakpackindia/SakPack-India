@@ -105,7 +105,7 @@ function CreateShipmentModal({ order, courierKey, onClose, onBooked }) {
             type="button"
             onClick={onClose}
             disabled={busy}
-            className="flex-1 rounded-xl border border-gold-400/25 bg-ivory-deep/60 px-4 py-3 text-base font-semibold uppercase tracking-wide text-ink/60 hover:text-ink disabled:opacity-50"
+            className="flex-1 whitespace-nowrap rounded-xl border border-gold-400/25 bg-ivory-deep/60 px-4 py-3 text-sm sm:text-base font-semibold uppercase tracking-wide text-ink/60 hover:text-ink disabled:opacity-50"
           >
             Cancel
           </button>
@@ -113,9 +113,9 @@ function CreateShipmentModal({ order, courierKey, onClose, onBooked }) {
             type="button"
             onClick={handleConfirm}
             disabled={busy}
-            className="btn-gold flex-1 px-4 py-3 text-base font-semibold uppercase tracking-wide disabled:opacity-60"
+            className="btn-gold flex-1 whitespace-nowrap px-4 py-3 text-sm sm:text-base font-semibold uppercase tracking-wide disabled:opacity-60"
           >
-            {busy ? "Booking…" : "Confirm Shipment"}
+            {busy ? "Booking…" : "Confirm"}
           </button>
         </div>
       </div>

@@ -11,8 +11,18 @@ import { createAdminClient } from "@/lib/supabase/admin";
 // URL field rejects any URL containing "shiprocket"/"kartrocket"/"sr"/"kr"
 // with an "Address is not allowed" error.
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key",
+  "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+};
+
 export async function GET() {
-  return Response.json({ status: "active" });
+  return Response.json({ status: "active" }, { headers: corsHeaders });
+}
+
+export async function OPTIONS() {
+  return new Response(null, { status: 200, headers: corsHeaders });
 }
 
 function normalizeOrderStatus(rawStatus) {
@@ -33,11 +43,19 @@ function normalizeOrderStatus(rawStatus) {
 }
 
 export async function POST(request) {
+  // Shiprocket's own "Test Webhook" button sends a POST with an empty body —
+  // request.json() throws on that, which used to surface as a raw error
+  // instead of the friendly "test ping received" the dashboard expects.
+  const rawBody = await request.text();
+  if (!rawBody || rawBody.trim() === "") {
+    return Response.json({ success: true, message: "Webhook endpoint is active." }, { headers: corsHeaders });
+  }
+
   let payload;
   try {
-    payload = await request.json();
+    payload = JSON.parse(rawBody);
   } catch {
-    return Response.json({ success: false, error: "Invalid JSON body." }, { status: 400 });
+    return Response.json({ success: false, error: "Invalid JSON body." }, { status: 400, headers: corsHeaders });
   }
 
   // Shiprocket's own "Test Webhook" button in the dashboard sends a payload
@@ -53,12 +71,12 @@ export async function POST(request) {
     const authHeader = request.headers.get("authorization") || "";
     const providedKey = request.headers.get("x-api-key") || authHeader.replace(/^Bearer\s+/i, "");
     if (!expectedKey || providedKey !== expectedKey) {
-      return Response.json({ success: false, error: "Invalid or missing webhook secret." }, { status: 401 });
+      return Response.json({ success: false, error: "Invalid or missing webhook secret." }, { status: 401, headers: corsHeaders });
     }
   }
 
   if (isTestPing) {
-    return Response.json({ success: true, message: "Test ping received." });
+    return Response.json({ success: true, message: "Test ping received." }, { headers: corsHeaders });
   }
 
   const admin = createAdminClient();
@@ -68,7 +86,7 @@ export async function POST(request) {
   else query = query.eq("shiprocket_shipment_id", shiprocketShipmentId);
 
   const { data: order } = await query.maybeSingle();
-  if (!order) return Response.json({ success: false, error: "Matching order not found." }, { status: 404 });
+  if (!order) return Response.json({ success: false, error: "Matching order not found." }, { status: 404, headers: corsHeaders });
 
   const currentStatus = payload.current_status || payload.shipment_status || payload.status || null;
   const courierName = payload.courier_name || null;
@@ -85,5 +103,5 @@ export async function POST(request) {
 
   await admin.from("orders").update(update).eq("id", order.id);
 
-  return Response.json({ success: true });
+  return Response.json({ success: true }, { headers: corsHeaders });
 }
