@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mail, Phone, Copy, Check, ChevronDown, Clock, ArrowUpRight, Instagram, Facebook, Youtube, Sparkles, MapPin, Navigation, ShieldCheck, Truck, Headphones, Building2 } from "lucide-react";
+import { Mail, Phone, Copy, Check, ChevronDown, ArrowUpRight, Instagram, Facebook, Youtube, Sparkles, MapPin, Navigation, ShieldCheck, Truck, Headphones, Building2 } from "lucide-react";
 import { BRAND, whatsappLink } from "@/lib/constants";
 import ContactForm from "./ContactForm";
 import Reveal from "@/components/Reveal";
@@ -236,32 +236,7 @@ export default function ContactContent() {
             </a>
           </motion.div>
 
-          {/* Business Hours Card */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            whileHover={{ y: -4 }}
-            className="h-full"
-          >
-            <div className="flex h-full flex-col justify-between rounded-2xl sm:rounded-3xl border border-gold-400/30 bg-white/95 p-5 sm:p-7 shadow-xl backdrop-blur-md transition-all duration-500 hover:border-gold-500">
-              <div className="flex items-center gap-3 sm:gap-4">
-                <span className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl sm:rounded-2xl bg-ink/10 text-gold-600 shadow-inner">
-                  <Clock className="h-5 w-5" />
-                </span>
-                <div>
-                  <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gold-600">
-                    Operating Hours
-                  </span>
-                  <p className="font-display mt-0.5 text-base sm:text-lg font-bold text-ink">Mon &ndash; Sat, 10 AM &ndash; 7 PM IST</p>
-                </div>
-              </div>
-              <p className="mt-3.5 sm:mt-4 text-xs sm:text-sm leading-relaxed text-ink/80 font-medium">
-                Sunday Support: Active on WhatsApp for urgent order inquiries.
-              </p>
-            </div>
-          </motion.div>
+
 
           {/* Follow Us */}
           <motion.div

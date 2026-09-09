@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Instagram, Facebook, Mail, Phone, MapPin, Clock } from "lucide-react";
+import { Instagram, Facebook, Mail, Phone, MapPin } from "lucide-react";
 import Logo from "@/components/Logo";
 import NewsletterForm from "@/components/NewsletterForm";
 import { whatsappLink, settingsToBrand } from "@/lib/constants";
@@ -127,10 +127,7 @@ export default async function Footer() {
                   </a>
                 </li>
 
-                <li className="flex items-start gap-2.5">
-                  <Clock className="h-4 w-4 shrink-0 mt-0.5 text-ink font-bold" />
-                  <span>Mon &ndash; Sat: 10AM &ndash; 7PM<br />Sunday: Closed</span>
-                </li>
+
               </ul>
             </div>
 

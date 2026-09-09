@@ -224,7 +224,7 @@ export default function ShipmentManager({ order }) {
           </button>
         </div>
 
-        {scans.length > 0 && (
+        {(liveStatus || scans.length > 0) && (
           <div className="mt-3 space-y-3 rounded-xl border border-gold-400/20 bg-ivory-deep/60 p-3 text-base">
             {liveStatus && (
               <p className="flex items-center justify-between border-b border-gold-400/20 pb-2 font-semibold capitalize text-gold-600">

@@ -63,6 +63,7 @@ export const metadata = {
     email: false,
     address: false,
     telephone: false,
+    date: false,
   },
   alternates: {
     canonical: "./",
@@ -146,6 +147,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${serif.variable}`} suppressHydrationWarning>
       <head>
+        <meta name="format-detection" content="telephone=no, date=no, email=no, address=no" />
         <link rel="icon" type="image/png" href="/logo.png" />
         <link rel="apple-touch-icon" href="/logo.png" />
         <script
