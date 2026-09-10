@@ -35,6 +35,7 @@ const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sakpack.in";
 
 export const metadata = {
   metadataBase: new URL(baseUrl),
+  generator: "Nexa Solutions (https://www.nexa-solutions.in/)",
   title: {
     default: "Sakpack India | Loved By 10,000+ Women | Bras, Panties, Palazzos, Leggings & Cord Sets",
     template: "%s | Sakpack India",
@@ -56,9 +57,16 @@ export const metadata = {
     "affordable luxury fashion",
     "online women clothing store India",
   ],
-  authors: [{ name: "Sakpack India" }],
-  creator: "Sakpack India",
+  authors: [
+    { name: "Sakpack India" },
+    { name: "Nexa Solutions", url: "https://www.nexa-solutions.in/" },
+  ],
+  creator: "Nexa Solutions (https://www.nexa-solutions.in/)",
   publisher: "Sakpack India",
+  other: {
+    developer: "Nexa Solutions (https://www.nexa-solutions.in/)",
+    designer: "Nexa Solutions",
+  },
   formatDetection: {
     email: false,
     address: false,
@@ -127,6 +135,11 @@ const jsonLd = {
     "Cord Sets",
     "Women's Fashion",
   ],
+  creator: {
+    "@type": "Organization",
+    name: "Nexa Solutions",
+    url: "https://www.nexa-solutions.in/",
+  },
   contactPoint: {
     "@type": "ContactPoint",
     telephone: "+91-9582083441",

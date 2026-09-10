@@ -139,7 +139,17 @@ export default async function Footer() {
       <div className="bg-ink text-ivory">
         <div className="mx-auto flex max-w-wrap flex-col items-center gap-2 px-4 py-3.5 text-center text-sm sm:text-sm text-ivory/85 font-medium sm:flex-row sm:justify-between md:px-12">
           <p>&copy; {new Date().getFullYear()} Sackpack India. All Rights Reserved.</p>
-          <p>We deliver style, comfort &amp; confidence. <span className="text-gold-400">💛</span></p>
+          <p>
+            Developed by{" "}
+            <a
+              href="https://www.nexa-solutions.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gold-400 font-semibold transition-colors hover:underline"
+            >
+              Nexa Solutions
+            </a>
+          </p>
         </div>
       </div>
     </footer>
